@@ -6,6 +6,7 @@ library(lubridate)
 source("code/myfunctions.r")
 
 # load data and ensure variable names match
+#change data location to sharepoint!!!!
 read.csv('data/release_data.csv', header=TRUE, as.is=TRUE, strip.white=TRUE) -> release
 release$ReleaseDate <- lubridate::ymd(release$ReleaseDate)
 dim(release)
