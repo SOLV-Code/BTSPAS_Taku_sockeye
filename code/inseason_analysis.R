@@ -1,4 +1,4 @@
-#load libraries
+# load libraries
 library(BTSPAS)
 library(ggplot2)
 library(lubridate)
@@ -26,7 +26,6 @@ catch <- plyr::rename(catch, c("Date"="RecoveryDate",
 catch$RecoveryType="Commercial"
 head(catch)
 
-# some basic statistics
 xtabs(~ReleaseStatWeek,  data=release,exclude=NULL, na.action=na.pass)
 xtabs(~RecoveryStatWeek, data=recap,  exclude=NULL, na.action=na.pass)
 xtabs(CatchWithTags~RecoveryStatWeek, data=catch,  exclude=NULL, na.action=na.pass)
@@ -54,8 +53,7 @@ strata$HalfStatWeek <- strata$StatWeek + .1 +
   .1*strata$dow %in% c(5,6,7)
 head(strata)
 
-# mergback the strata halfweek back to release, recovery,
-# and commercial catch
+# merge back the strata halfweek back to release, recovery, and commercial catch
 
 dim(release)
 release <- merge(release, 
@@ -83,7 +81,7 @@ xtabs(~RecoveryHalfStatWeek, data=recap)
 select <- (recap$RecoveryHalfStatWeek %% 1) > .15  # recoveries in second half of week
 sum(select)
 xtabs(~RecoveryHalfStatWeek, data=recap[select,])
-recap$RecoveryHalfStatWeek[select] <- recap$RecoveryHalfStatWeek[select] - .1 # shif back to the opening
+recap$RecoveryHalfStatWeek[select] <- recap$RecoveryHalfStatWeek[select] - .1 # shift back to the opening
 
 xtabs(~RecoveryHalfStatWeek, data=recap)
 
@@ -138,8 +136,6 @@ fw.prefix.dropout <- paste("Taku-FW-Inseason-W",round(min(fw.stat.weeks)),
                            "-W",round(max(fw.stat.weeks)),"-fallback-",sep="")
 fit.BTSPAS.dropout(fw.data,prefix=fw.prefix.dropout, n=50, dropout=12)
 
-
-#-------------
 # Half Week BTSPAS analysis
 # Define the stratum variable as 1 = first stat week, 2=second stat week etc
 hw.stat.weeks <- sort(as.vector(outer(fw.stat.weeks, c(.1,.2), "+")))  # releases and recoveries 
@@ -166,8 +162,6 @@ fit.BTSPAS.dropout(hw.data,prefix=hw.prefix.dropout, n=50, dropout=12)
 
 
 # Make a table of the estimates from the various sets of weeks etc
-##Extract the outputs
-
 # Extract the results from the various fits
 file.names <-dir()
 # Extract the directories with the fits
