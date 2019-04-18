@@ -1,73 +1,24 @@
-# Inseason Estimates for Taku River
-#
-#  After reading in the data and doing various merges,
-#  select the stat weeks for which you want the BTSPAS to provide estimates
-#  on a FW and HW basis.
-# 
-#  It will create a series of directories in the current workspace that will
-#  accumulate as you run the code each week
-#  This code will compute the Petersen, the Full Week (FW) and Half week (HW) stratified
-#  Petersen using BTSPAS
-#
-
-
-
-# Data files will be provided on a weekly basis from the tagging crews and DFO
-# commercial catch
-#
-# release data
-#   - when fish are released with the following variable names
-#        Year, TagID,  ReleaseDate, ReleaseStatWeek (starts on Sunday)
-
-# recapture data from DFO
-#   - which tags are recovered in COMMERCIAL catch only with the following names
-#        Year, TagID, RecoveryDate, RecoveryStatWeek (starts on Sunday), RecoveryType
-#     only those records with RecoveryType="Commerical" will be used
-
-# commercial catch from DFO'
-#   - commercial catch EXCLUDING recoveries of tagged fish with the following names
-#        Year, RecoveryDate, RecoveryStatWeek CatchWithTags, RecoveryType
-#     only those records with RecoveryType="Commerical" will be used
-#     the commercial catch should INCLUDE the count of tagged fish recovered
-#     **** It is assumed that the recovery date matches a commerical opening. For example,
-#     if a tag is returned after the opening is closed, it is assume to have occurred during
-#     the opening (which is usally in the first half of the week) ****
-#     THIS IS IMPORTANT TO GET THE HALF WEEK ANALYSIS TO WORK. See the checks later in the code
-
-##### BE SURE TO download the latest version of BTSPAS from
-##### the GitHub site at https://github.com/cschwarz-stat-sfu-ca/BTSPAS
-##### using
-#####     devtools::install_github("cschwarz-stat-sfu-ca/BTSPAS", 
-#####                              dependencies = TRUE,
-#####                              build_vignettes = TRUE)
-##### This could take up to 20 minutes, so be patient. (The vignettes take a long time
-##### to compile.
-
+#load libraries
 library(BTSPAS)
 library(ggplot2)
 library(lubridate)
+#devtools::install_github("cschwarz-stat-sfu-ca/BTSPAS", dependencies = TRUE, build_vignettes = TRUE)
+source("code/myfunctions.r")
 
-source("../myfunctions.r")
-
-#---------------------
-# read in the data and make sure that variable names match
-# the list above
-release <- read.csv(file.path("InSeasonData","release_data.csv"),
-                    header=TRUE, as.is=TRUE, strip.white=TRUE)
+# load data and ensure variable names match
+read.csv('data/release_data.csv', header=TRUE, as.is=TRUE, strip.white=TRUE) -> release
 release$ReleaseDate <- lubridate::ymd(release$ReleaseDate)
 dim(release)
 release <- release[ !is.na(release$ReleaseDate),]
 dim(release)
 head(release)
 
-recap <- read.csv(file.path("InSeasonData","recovery_data.csv"),
-                  header=TRUE, as.is=TRUE, strip.white=TRUE)
+read.csv('data/recovery_data.csv', header=TRUE, as.is=TRUE, strip.white=TRUE) -> recap
 recap$RecoveryDate <- lubridate::ymd(recap$RecoveryDate)
 recap$RecoveryType <- "Commercial"
 head(recap)
 
-catch <- read.csv(file.path("InSeasonData","catch_data.csv"),
-                  header=TRUE, as.is=TRUE, strip.white=TRUE)
+read.csv('data/catch_data.csv', header=TRUE, as.is=TRUE, strip.white=TRUE) -> catch
 catch$Date <- lubridate::ymd(catch$Date)
 catch <- plyr::rename(catch, c("Date"="RecoveryDate",
                                "StatWeek"="RecoveryStatWeek",
@@ -75,17 +26,14 @@ catch <- plyr::rename(catch, c("Date"="RecoveryDate",
 catch$RecoveryType="Commercial"
 head(catch)
 
-
 # some basic statistics
 xtabs(~ReleaseStatWeek,  data=release,exclude=NULL, na.action=na.pass)
 xtabs(~RecoveryStatWeek, data=recap,  exclude=NULL, na.action=na.pass)
 xtabs(CatchWithTags~RecoveryStatWeek, data=catch,  exclude=NULL, na.action=na.pass)
 
-#------------------------------------------
-# Figure out the half week strata
-# We will divide Sunday -> Wednesday as the first half= Commercial Opening
+#Half Week Strata
+# Divide Sunday -> Wednesday as the first half= Commercial Opening
 #                Thursday -> Saturday as the second half
-#
 # First get all the dates in the study
 strata <- rbind( 
   plyr::rename(release, c("ReleaseStatWeek"="StatWeek",
@@ -149,8 +97,6 @@ catch <- merge(catch,
                all.x=TRUE)
 dim(catch)
 
-#----------------------------------------
-
 # merge the recaptures with the releases
 # check that recapture tag numbers match
 setdiff(recap$TagID, release$TagID)
@@ -159,25 +105,17 @@ dim(release)
 relrecap <- merge(release, recap, all.x=TRUE)
 dim(relrecap)
 
-#----------------------------------------
-#----------------------------------------
-#----------------------------------------
-#----------------------------------------
-
 # Generate the inseason estimate
 # Give the list the StatWeeks that should be included in the estimate
-
 xtabs(~ReleaseStatWeek,  data=relrecap)
 xtabs(~RecoveryStatWeek, data=relrecap)
 xtabs(CatchWithTags~RecoveryStatWeek, data=catch) 
 
 
-#-------------
 # Full Week BTSPAS analysis
 # Define the stratum variable as 1 = first stat week, 2=second stat week etc
 # THIS IS WHERE YOU SELECT THE STAT WEEKS FROM YOUR DATA SET TO MAKE THE ESTIMATES
 # REFER TO THE XTABS() JUST ABOVE FOR SOME HELP IN MAKING THE DECISION
-
 fw.stat.weeks <- 23:28   # stat weeks with releases and recoveries to  be included
 
 fw.stratum.index <- data.frame(stratum.index=1:length(fw.stat.weeks),
@@ -227,20 +165,17 @@ hw.prefix.dropout <- gsub("FW","HW",fw.prefix.dropout)
 fit.BTSPAS.dropout(hw.data,prefix=hw.prefix.dropout, n=50, dropout=12)
 
 
-#------------------------------------
-#------------------------------------
-#-----------------------------------
 # Make a table of the estimates from the various sets of weeks etc
-##### Extract the outputs
+##Extract the outputs
 
-## Extract the results from the various fits
+# Extract the results from the various fits
 file.names <-dir()
 # Extract the directories with the fits
 file.names.fits<- file.names[grepl(paste("^Taku-"), file.names)]
 file.names.fits
 
 # make a pdf file of the fitted curves
-pdf(paste("Inseason-all-fits.pdf",sep=""))
+pdf(paste("output/Inseason-all-fits.pdf",sep=""))
 plyr::l_ply(file.names.fits, function(x){
   cat("Extracting final plot from ", x, "\n")
   load(file.path(x, "taku-fit-tspndenp-saved.Rdata"))
@@ -266,10 +201,9 @@ run.size <- plyr::ldply(file.names.fits, function(x){
 })
 run.size
 write.csv(run.size,
-          file=paste("inseason-run.size.csv",sep=""))
+          file=paste("output/inseason-run.size.csv",sep=""))
 
-## Extract the Petersen estimators
-#
+# Extract the Petersen estimators
 # Extract all of the estimates of the total run size
 run.pet.size <- plyr::ldply(file.names.fits, function(x){
   cat("Extracting Petersen from ",x,"\n")
@@ -288,4 +222,4 @@ run.pet.size <- plyr::ldply(file.names.fits, function(x){
 })
 run.pet.size
 write.csv(run.pet.size,
-          file="Inseason-PP.run.size.csv")
+          file="output/Inseason-PP.run.size.csv")
