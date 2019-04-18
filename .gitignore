@@ -2,5 +2,6 @@
 .Rhistory
 .RData
 .Ruserdata
-output/
+#do not commit output for inseason estimates
+output/ 
 Taku*/
