@@ -1,0 +1,41 @@
+---
+title: "Directions for Inseason Estimates for Taku River Sockeye Salmon Using BTSPAS"
+author: "Sara Miller"
+date: "April 2019"
+output:
+  pdf_document: default
+  word_document: default
+---
+```{r setup, echo = FALSE}
+knitr::opts_chunk$set(echo = FALSE, warning=FALSE, message = FALSE, error=FALSE)
+#must be outside this folder to run
+```
+Reference for BTSPAS function:  
+Bonner, S. J. and Schwarz, C. J. (2019). BTSPAS: Bayesian Time Stratified Petersen Analysis System.R package
+version 2019.01.07.
+
+# Inseason Estimates for Taku River
+After reading in the data and doing various merges, select the stat weeks for which you want the BTSPAS to provide estimates on a FW and HW basis.It will create a series of directories in the current workspace that will accumulate as you run the code each week. This code will compute the Petersen, the Full Week (FW) and Half week (HW) stratified
+
+##Petersen Estimate using BTSPAS
+Data files will be provided on a weekly basis from the tagging crews and DFO
+commercial catch
+
+release data
+- when fish are released with the following variable names
+Year, TagID,  ReleaseDate, ReleaseStatWeek (starts on Sunday)
+
+recapture data from DFO
+- which tags are recovered in COMMERCIAL catch only with the following names
+Year, TagID, RecoveryDate, RecoveryStatWeek (starts on Sunday), RecoveryType
+only those records with RecoveryType="Commerical" will be used
+
+commercial catch from DFO
+- commercial catch EXCLUDING recoveries of tagged fish with the following names
+Year, RecoveryDate, RecoveryStatWeek CatchWithTags, RecoveryType
+only those records with RecoveryType="Commerical" will be used. The commercial catch should INCLUDE the count of tagged fish recovered. It is assumed that the recovery date matches a commerical opening. For example, if a tag is returned after the opening is closed, it is assume to have occurred during the opening (which is usally in the first half of the week) 
+THIS IS IMPORTANT TO GET THE HALF WEEK ANALYSIS TO WORK. See the checks later in the code
+
+Download the latest version of BTSPAS from:
+the GitHub site at https://github.com/cschwarz-stat-sfu-ca/BTSPAS using devtools::install_github("cschwarz-stat-sfu-ca/BTSPAS", dependencies = TRUE, build_vignettes = TRUE)
+This could take up to 20 minutes, so be patient. (The vignettes take a long time to compile.
