@@ -2,10 +2,12 @@
 library(BTSPAS)
 library(ggplot2)
 library(lubridate)
+library(filesstrings)
 #devtools::install_github("cschwarz-stat-sfu-ca/BTSPAS", dependencies = TRUE, build_vignettes = TRUE)
-source("code/myfunctions.r")
+source("code/myfunctions_test.r")
 
 fw.stat.weeks <- 23:28   # stat weeks with releases and recoveries to  be included
+Year<-2017 #input year
 
 # load data and ensure variable names match
 #change data location to sharepoint!!!!
@@ -219,3 +221,24 @@ run.pet.size <- plyr::ldply(file.names.fits, function(x){
 })
 run.pet.size
 write.csv(run.pet.size, file="output/Inseason-PP.run.size.csv")
+
+
+taku.prefix <- paste(fw.prefix,"-",Year, sep="")
+files_old <- paste0(getwd(), "/", taku.prefix)
+files_new <- paste0(getwd(), "/output/", taku.prefix)
+file.move(from = files_old, to = files_new)
+
+taku.prefix <- paste(fw.prefix.dropout,"-",Year, sep="")
+files_old <- paste0(getwd(), "/", taku.prefix)
+files_new <- paste0(getwd(), "/output/", taku.prefix)
+file.move(from = files_old, to = files_new)
+
+taku.prefix <- paste(hw.prefix,"-",Year, sep="")
+files_old <- paste0(getwd(), "/", taku.prefix)
+files_new <- paste0(getwd(), "/output/", taku.prefix)
+file.move(from = files_old, to = files_new)
+
+taku.prefix <- paste(hw.prefix.dropout,"-",Year, sep="")
+files_old <- paste0(getwd(), "/", taku.prefix)
+files_new <- paste0(getwd(), "/output/", taku.prefix)
+file.move(from = files_old, to = files_new)
