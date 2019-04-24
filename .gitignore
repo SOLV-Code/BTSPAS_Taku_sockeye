@@ -5,3 +5,5 @@
 #do not commit output for inseason estimates
 output/ 
 Taku*/
+figs/ 
+data/ 
