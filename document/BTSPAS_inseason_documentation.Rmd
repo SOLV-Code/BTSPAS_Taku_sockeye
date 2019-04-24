@@ -20,12 +20,16 @@ output/
 figs/  
 data/  
 Taku*/   
- so that ouput from inseason estimates is not committed to GitHub.
+so that ouput and data from inseason estimates is not committed to GitHub.
 The code files that are necessary to run the analysis are the inseason_analysis.R and the functions.R files.
 
-#Data Set Up
-Data files will be provided on a weekly basis from the tagging crews and DFO and should be placed in the data folder. These include release data, recapture data, and commercial catch data. Release data should include the variable names: Year, TagID,  ReleaseDate, ReleaseStatWeek (which starts on Sunday). Recapture data from DFO should include the variable names: 
-Year, TagID, RecoveryDate, RecoveryStatWeek (starts on Sunday). Recovery type should only include those records with RecoveryType="Commerical" and TagPrefix ="s" for sockeye salmon. It is assumed that the recovery date matches a commerical opening. For example, if a tag is returned after the opening is closed, it is assumed to have occurred during the opening (which is usally in the first half of the week). This is important to allow the half week analysis to work properly. The commercial catch data from DFO (commercial catch including recoveries of tagged fish) with the following names: Year, Date, StatWeek, CdnCommCt. The recovery type should only include commercial sockeye salmon catch. If the fishery was not open or there were zero catches, a '0' should be placed in the cell. All dates should in mm-dd-yyyy format.
+#Data Setup
+Data files will be provided on a weekly basis from the tagging crews and DFO and should be placed in the data folder. These include:  
+1. release data,  
+2. recapture data, and  
+3. commercial catch data.  
+
+Release data should include the variable names: Year, TagID,  ReleaseDate, and ReleaseStatWeek (which starts on Sunday). Recapture data from DFO should include the variable names:  Year, TagID, RecoveryDate, and RecoveryStatWeek (starts on Sunday). Recovery type should only include those records with RecoveryType="Commerical" and TagPrefix ="s" for sockeye salmon. It is assumed that the recovery date matches a commerical opening. For example, if a tag is returned after the opening is closed, it is assumed to have occurred during the opening (which is usally in the first half of the week). This is important to allow the half week analysis to work properly. The commercial catch data from DFO should include commercial catch including recoveries of tagged fish with the following names: Year, Date, StatWeek, and CdnCommCt. The recovery type should only include commercial sockeye salmon catch. If the fishery was not open or there were zero catches, a '0' should be placed in the cell. All dates should in mm-dd-yyyy format.
 
 These three csv files should be the master files, updated weekly, and then placed in the data folder. Old versions of weekly data should be kept in the data/prior_weeks_data folder. The data files should be 'clean' data and free of NAs or missing information (i.e. missing recovery dates or tag id numbers).
 
@@ -37,35 +41,23 @@ All packages need to be loaded prior to running models. These pacakges are locat
 
 There are a set of functions that need to be run in order. These functions are sourced from the functions.R file.
 
-1. BTSPAS_input 
-Creates the data structures required for BTSPAS for releases
-This is stratum index, n1, m2, and u2.
-n1 is the number of tagged releases
-m2 is a matrix with columns representing recoveries in the same stratum as release, the next stratum of release etc
-u2 is the number of recoveries
-commercial = data frame of commercial recoveries. One line per stratum with the total count given
-             missing strata imply a commercial catch of 0
-rel.stratum = variable names defining the release strata
-rec.stratum = variable names defining the recovery strata
-            We assume that character version of stratum numbers wil properly sort, i.e. store as 01 etc
-stratum.index has index number and stratum label.
-only those strata that belong to stratum index will be used (to enable you truncate at front/end of study)
-Check that data frame as the required variables
+1. BTSPAS_input = creates the data structures required for BTSPAS for releases, recoveries, and catch data
+This is stratum index, n1, m2, and u2. The variable n1 is the number of tagged releases, m2 is a matrix with columns representing recoveries in the same stratum as release, the next stratum of release etc., and u2 is the number of recoveries.
 
 2. fit.BTSPAS = fits input data to BTSPAS
 3. fit.BTSPAS.dropout = fits input data to BTSPAS allowing for dropout/fallback
 
 #Inseason Estimates for Taku River
 The only two inputs needed for the code to run are the stat weeks and the year.
-Input these at the top if the inseason_analysis.R code
+Input these at the top of the inseason_analysis.R code.
 
-fw.stat.weeks <- 23:28   # stat weeks with releases and recoveries to  be included
-Year<-2017 #input year
-fw.stat.weeks <- 23:28   # stat weeks with releases and recoveries to  be included
+fw.stat.weeks <- 23:28   # stat weeks with releases and recoveries to  be included  
+Year <- 2017 #input year
 
-Select the stat weeks for which you want the BTSPAS to provide estimates on a FW and HW basis.Change the above code to account for which weeks the estimate is for.
+Select the stat weeks for which you want the BTSPAS to provide estimates on a FW and HW basis. Change the above code to account for which weeks of data will be used in the estimate.
 
-After reading in the data and doing various merges, the inseason_analysis.R code will create a series of directories in the current workspace that will accumulate as you run the code each week. This code will compute the Full Week (FW), and Half week (HW) stratified with and without dropout. The output files will appear in the output folder as "Taku-FW-Inseason-Wxx-Wxx--YYYY,"
-"Taku-HW-Inseason-Wxx-Wxx--YYYY,"
-"Taku-FW-Inseason-Wxx-Wxx-fallback--YYYY," and
-"Taku-HW-Inseason-Wxx-Wxx-fallback-YYYY."
+After reading in the data and doing various merges, the inseason_analysis.R code will create a series of directories in the current workspace that will accumulate as you run the code each week. This code will compute the Full Week (FW), and Half week (HW) stratified with and without dropout. The output files will appear in the output folder as:  
+"Taku-FW-Inseason-Wxx-Wxx--YYYY,"  
+"Taku-HW-Inseason-Wxx-Wxx--YYYY,"  
+"Taku-FW-Inseason-Wxx-Wxx-fallback--YYYY," and  
+"Taku-HW-Inseason-Wxx-Wxx-fallback-YYYY," where *x* is the stat week numbers and *YYYY* is the year.  
