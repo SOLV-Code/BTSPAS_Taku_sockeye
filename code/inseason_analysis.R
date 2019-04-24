@@ -4,7 +4,7 @@ library(ggplot2)
 library(lubridate)
 library(filesstrings)
 #devtools::install_github("cschwarz-stat-sfu-ca/BTSPAS", dependencies = TRUE, build_vignettes = TRUE)
-source("code/functions.r")
+source("code/functions.R")
 
 fw.stat.weeks <- 23:28   # stat weeks with releases and recoveries to  be included
 Year<-2018 #input year
@@ -131,6 +131,7 @@ fw.data <- BTSPAS_input(relrecap, catch, "ReleaseStatWeek", "RecoveryStatWeek",
 # fit the BTSPAS model
 fw.prefix <- paste("Taku-FW-Inseason-W",round(min(fw.stat.weeks)),
                    "-W",round(max(fw.stat.weeks)),"-",sep="")
+
 fit.BTSPAS(fw.data,prefix=fw.prefix)
 
 # fit the BTSPAS model with fall back (say n=50, x=12)
@@ -162,7 +163,6 @@ fit.BTSPAS(hw.data,prefix=hw.prefix)
 hw.prefix.dropout <- gsub("FW","HW",fw.prefix.dropout)
 fit.BTSPAS.dropout(hw.data,prefix=hw.prefix.dropout, n=50, dropout=12)
 
-
 # Make a table of the estimates from the various sets of weeks etc
 # Extract the results from the various fits
 file.names <-dir()
@@ -171,7 +171,7 @@ file.names.fits<- file.names[grepl(paste("^Taku-"), file.names)]
 file.names.fits
 
 # make a pdf file of the fitted curves
-pdf(paste("Inseason-all-fits.pdf",sep=""))
+pdf(paste("output/Inseason-all-fits.pdf",sep=""))
 plyr::l_ply(file.names.fits, function(x){
   cat("Extracting final plot from ", x, "\n")
   load(file.path(x, "taku-fit-tspndenp-saved.Rdata"))
@@ -197,7 +197,7 @@ run.size <- plyr::ldply(file.names.fits, function(x){
 })
 run.size
 write.csv(run.size,
-          file=paste("inseason-run.size.csv",sep=""))
+          file=paste("output/inseason-run.size.csv",sep=""))
 
 # Extract the Petersen estimators
 # Extract all of the estimates of the total run size
@@ -217,7 +217,7 @@ run.pet.size <- plyr::ldply(file.names.fits, function(x){
     file=x)
 })
 run.pet.size
-write.csv(run.pet.size, file="Inseason-PP.run.size.csv")
+write.csv(run.pet.size, file="output/Inseason-PP.run.size.csv")
 
 
 taku.prefix <- paste(fw.prefix,"-",Year, sep="")
