@@ -27,9 +27,8 @@ The code files that are necessary to run the analysis are the inseason_analysis.
 #Data Set Up
 Data files will be provided on a weekly basis from the tagging crews and DFO and should be placed in the data folder. These include release data (when fish are released with the following variable names: Year, TagID,  ReleaseDate, ReleaseStatWeek (starts on Sunday)), recapture data from DFO (which tags are recovered in commercial catch only with the following names:
 Year, TagID, RecoveryDate, RecoveryStatWeek (starts on Sunday), RecoveryType
-only those records with RecoveryType="Commerical" will be used), and commercial catch from DFO (commercial catch excluding recoveries of tagged fish with the following names: Year, RecoveryDate, RecoveryStatWeek CatchWithTags, RecoveryType
-only those records with RecoveryType="Commerical" will be used). The commercial catch should include the count of tagged fish recovered. It is assumed that the recovery date matches a commerical opening. For example, if a tag is returned after the opening is closed, it is assume to have occurred during the opening (which is usally in the first half of the week). 
-This is important to allow the half week analysis to work properly.
+only those records with RecoveryType="Commerical" will be used), and commercial catch from DFO (commercial catch excluding recoveries of tagged fish with the following names: Year, Date, StatWeek, CdnCommCt). The recovery type should only include commercial catch. The commercial catch should include the count of tagged fish recovered. It is assumed that the recovery date matches a commerical opening. For example, if a tag is returned after the opening is closed, it is assumed to have occurred during the opening (which is usally in the first half of the week). This is important to allow the half week analysis to work properly.
+
 These three csv files should be the master files, be updated weekly, and placed in the data folder. Old versions of weekly data should be kept in the data/prior_weeks_data folder.
 
 Download the latest version of BTSPAS from:
@@ -69,5 +68,7 @@ fw.stat.weeks <- 23:28   # stat weeks with releases and recoveries to  be includ
 
 Select the stat weeks for which you want the BTSPAS to provide estimates on a FW and HW basis.Change the above code to account for which weeks the estimate is for.
 
-After reading in the data and doing various merges, the inseason_analysis.R code will create a series of directories in the current workspace that will accumulate as you run the code each week. This code will compute the Full Week (FW), and Half week (HW) stratified with and without dropout.
-
+After reading in the data and doing various merges, the inseason_analysis.R code will create a series of directories in the current workspace that will accumulate as you run the code each week. This code will compute the Full Week (FW), and Half week (HW) stratified with and without dropout. The output files will appear in the output folder as "Taku-FW-Inseason-Wxx-Wxx--YYYY,"
+"Taku-HW-Inseason-Wxx-Wxx--YYYY,"
+"Taku-FW-Inseason-Wxx-Wxx-fallback--YYYY," and
+"Taku-HW-Inseason-Wxx-Wxx-fallback-YYYY."
