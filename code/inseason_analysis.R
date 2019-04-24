@@ -218,5 +218,4 @@ run.pet.size <- plyr::ldply(file.names.fits, function(x){
     file=x)
 })
 run.pet.size
-write.csv(run.pet.size,
-          file="output/Inseason-PP.run.size.csv")
+write.csv(run.pet.size, file="output/Inseason-PP.run.size.csv")
