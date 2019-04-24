@@ -14,13 +14,20 @@ Reference for BTSPAS function:
 Bonner, S. J. and Schwarz, C. J. (2019). BTSPAS: Bayesian Time Stratified Petersen Analysis System.R package
 version 2019.01.07.
 # Project Folder Setup
-Set up our Rproject to include code, data, document, figs, and output. Make sure the .gitignore file contains output/ and
-Taku*/ so that ouput from inseason estimates is not committed to GitHub.
+Set up our Rproject to include code, data, document, figs, and output. Make sure the .gitignore file contains 
+output/ 
+figs/
+data/
+Taku*/ 
+so that ouput from inseason estimates is not committed to GitHub.
 
 # Inseason Estimates for Taku River
-After reading in the data and doing various merges, select the stat weeks for which you want the BTSPAS to provide estimates on a FW and HW basis.It will create a series of directories in the current workspace that will accumulate as you run the code each week. This code will compute the Petersen, the Full Week (FW) and Half week (HW) stratified
+fw.stat.weeks <- 23:28   # stat weeks with releases and recoveries to  be included
+Select the stat weeks for which you want the BTSPAS to provide estimates on a FW and HW basis.Change the above code to account for which weeks the estimate is for.
 
-##Petersen Estimate using BTSPAS
+After reading in the data and doing various merges, It will create a series of directories in the current workspace that will accumulate as you run the code each week. This code will compute the Petersen, the Full Week (FW) and Half week (HW) stratified
+
+##Data Set Up
 Data files will be provided on a weekly basis from the tagging crews and DFO
 commercial catch
 
@@ -29,12 +36,12 @@ release data
 Year, TagID,  ReleaseDate, ReleaseStatWeek (starts on Sunday)
 
 recapture data from DFO
-- which tags are recovered in COMMERCIAL catch only with the following names
+- which tags are recovered in commercial catch only with the following names:
 Year, TagID, RecoveryDate, RecoveryStatWeek (starts on Sunday), RecoveryType
 only those records with RecoveryType="Commerical" will be used
 
 commercial catch from DFO
-- commercial catch EXCLUDING recoveries of tagged fish with the following names
+- commercial catch excluding recoveries of tagged fish with the following names
 Year, RecoveryDate, RecoveryStatWeek CatchWithTags, RecoveryType
 only those records with RecoveryType="Commerical" will be used. The commercial catch should INCLUDE the count of tagged fish recovered. It is assumed that the recovery date matches a commerical opening. For example, if a tag is returned after the opening is closed, it is assume to have occurred during the opening (which is usally in the first half of the week) 
 THIS IS IMPORTANT TO GET THE HALF WEEK ANALYSIS TO WORK. See the checks later in the code

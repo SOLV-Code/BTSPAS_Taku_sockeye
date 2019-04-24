@@ -5,6 +5,8 @@ library(lubridate)
 #devtools::install_github("cschwarz-stat-sfu-ca/BTSPAS", dependencies = TRUE, build_vignettes = TRUE)
 source("code/myfunctions.r")
 
+fw.stat.weeks <- 23:28   # stat weeks with releases and recoveries to  be included
+
 # load data and ensure variable names match
 #change data location to sharepoint!!!!
 read.csv('data/release_data.csv', header=TRUE, as.is=TRUE, strip.white=TRUE) -> release
@@ -115,7 +117,7 @@ xtabs(CatchWithTags~RecoveryStatWeek, data=catch)
 # Define the stratum variable as 1 = first stat week, 2=second stat week etc
 # THIS IS WHERE YOU SELECT THE STAT WEEKS FROM YOUR DATA SET TO MAKE THE ESTIMATES
 # REFER TO THE XTABS() JUST ABOVE FOR SOME HELP IN MAKING THE DECISION
-fw.stat.weeks <- 23:28   # stat weeks with releases and recoveries to  be included
+
 
 fw.stratum.index <- data.frame(stratum.index=1:length(fw.stat.weeks),
                                stratum.label=as.character(fw.stat.weeks),
