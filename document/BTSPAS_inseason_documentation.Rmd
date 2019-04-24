@@ -61,3 +61,7 @@ After reading in the data and doing various merges, the inseason_analysis.R code
 "Taku-HW-Inseason-Wxx-Wxx--YYYY,"  
 "Taku-FW-Inseason-Wxx-Wxx-fallback--YYYY," and  
 "Taku-HW-Inseason-Wxx-Wxx-fallback-YYYY," where *x* is the stat week numbers and *YYYY* is the year.  
+
+##Dropout rate
+Model the year-to-year variation in drop out (including sampling uncertainty) as binomial with n =  50  and x= 11 
+which gives p(dropout)= 0.22 and standard deviation of 0.05938262.

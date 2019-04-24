@@ -161,7 +161,7 @@ fit.BTSPAS(hw.data,prefix=hw.prefix)
 
 # fit the BTSPAS model with fall back (say n=50, x=12)
 hw.prefix.dropout <- gsub("FW","HW",fw.prefix.dropout)
-fit.BTSPAS.dropout(hw.data,prefix=hw.prefix.dropout, n=50, dropout=12)
+fit.BTSPAS.dropout(hw.data,prefix=hw.prefix.dropout, n=50, dropout=11)
 
 # Make a table of the estimates from the various sets of weeks etc
 # Extract the results from the various fits
