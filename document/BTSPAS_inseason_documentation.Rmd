@@ -15,25 +15,22 @@ Bonner, S. J. and Schwarz, C. J. (2019). BTSPAS: Bayesian Time Stratified Peters
 version 2019.01.07.
 
 # Project Folder Setup
-Set up our Rproject to include code, data, document, figs, and output. Make sure the .gitignore file contains 
-output/ 
-figs/
-data/
-Taku*/ 
-data/prior_weeks_data
-so that ouput from inseason estimates is not committed to GitHub.
+Set up your Rproject to include code, data, document, figs, data/prior_weeks_data, and output folders. Make sure the .gitignore file contains:   
+output/   
+figs/  
+data/  
+Taku*/   
+ so that ouput from inseason estimates is not committed to GitHub.
 The code files that are necessary to run the analysis are the inseason_analysis.R and the functions.R files.
 
 #Data Set Up
-Data files will be provided on a weekly basis from the tagging crews and DFO and should be placed in the data folder. These include release data (when fish are released with the following variable names: Year, TagID,  ReleaseDate, ReleaseStatWeek (starts on Sunday)), recapture data from DFO (which tags are recovered in commercial catch only with the following names:
-Year, TagID, RecoveryDate, RecoveryStatWeek (starts on Sunday), RecoveryType
-only those records with RecoveryType="Commerical" will be used), and commercial catch from DFO (commercial catch excluding recoveries of tagged fish with the following names: Year, Date, StatWeek, CdnCommCt). The recovery type should only include commercial catch. The commercial catch should include the count of tagged fish recovered. It is assumed that the recovery date matches a commerical opening. For example, if a tag is returned after the opening is closed, it is assumed to have occurred during the opening (which is usally in the first half of the week). This is important to allow the half week analysis to work properly.
+Data files will be provided on a weekly basis from the tagging crews and DFO and should be placed in the data folder. These include release data, recapture data, and commercial catch data. Release data should include the variable names: Year, TagID,  ReleaseDate, ReleaseStatWeek (which starts on Sunday). Recapture data from DFO should include the variable names: 
+Year, TagID, RecoveryDate, RecoveryStatWeek (starts on Sunday). Recovery type should only include those records with RecoveryType="Commerical" and TagPrefix ="s" for sockeye salmon. It is assumed that the recovery date matches a commerical opening. For example, if a tag is returned after the opening is closed, it is assumed to have occurred during the opening (which is usally in the first half of the week). This is important to allow the half week analysis to work properly. The commercial catch data from DFO (commercial catch including recoveries of tagged fish) with the following names: Year, Date, StatWeek, CdnCommCt. The recovery type should only include commercial sockeye salmon catch. If the fishery was not open or there were zero catches, a '0' should be placed in the cell. All dates should in mm-dd-yyyy format.
 
-These three csv files should be the master files, be updated weekly, and placed in the data folder. Old versions of weekly data should be kept in the data/prior_weeks_data folder.
+These three csv files should be the master files, updated weekly, and then placed in the data folder. Old versions of weekly data should be kept in the data/prior_weeks_data folder. The data files should be 'clean' data and free of NAs or missing information (i.e. missing recovery dates or tag id numbers).
 
-Download the latest version of BTSPAS from:
-the GitHub site at https://github.com/cschwarz-stat-sfu-ca/BTSPAS using devtools::install_github("cschwarz-stat-sfu-ca/BTSPAS", dependencies = TRUE, build_vignettes = TRUE)
-This could take up to 20 minutes. The vignettes take a long time to compile.
+Download the latest version of BTSPAS from the GitHub site at https://github.com/cschwarz-stat-sfu-ca/BTSPAS using devtools::install_github("cschwarz-stat-sfu-ca/BTSPAS", dependencies = TRUE, build_vignettes = TRUE)
+This could take up to 20 minutes because the vignettes take a long time to compile.
 
 #Analysis
 All packages need to be loaded prior to running models. These pacakges are located at the top of the inseason_analysis.R file. The functions.R file is sourced within the inseason_analysis.R file.
