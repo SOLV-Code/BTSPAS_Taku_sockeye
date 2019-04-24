@@ -20,6 +20,7 @@ output/
 figs/
 data/
 Taku*/ 
+data/prior_weeks_data
 so that ouput from inseason estimates is not committed to GitHub.
 The code files that are necessary to run the analysis are the inseason_analysis.R and the functions.R files.
 
@@ -29,6 +30,7 @@ Year, TagID, RecoveryDate, RecoveryStatWeek (starts on Sunday), RecoveryType
 only those records with RecoveryType="Commerical" will be used), and commercial catch from DFO (commercial catch excluding recoveries of tagged fish with the following names: Year, RecoveryDate, RecoveryStatWeek CatchWithTags, RecoveryType
 only those records with RecoveryType="Commerical" will be used). The commercial catch should include the count of tagged fish recovered. It is assumed that the recovery date matches a commerical opening. For example, if a tag is returned after the opening is closed, it is assume to have occurred during the opening (which is usally in the first half of the week). 
 This is important to allow the half week analysis to work properly.
+These three csv files should be the master files, be updated weekly, and placed in the data folder. Old versions of weekly data should be kept in the data/prior_weeks_data folder.
 
 Download the latest version of BTSPAS from:
 the GitHub site at https://github.com/cschwarz-stat-sfu-ca/BTSPAS using devtools::install_github("cschwarz-stat-sfu-ca/BTSPAS", dependencies = TRUE, build_vignettes = TRUE)
