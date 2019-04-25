@@ -15,10 +15,11 @@ Bonner, S. J. and Schwarz, C. J. (2019). BTSPAS: Bayesian Time Stratified Peters
 version 2019.01.07.
 
 # Project Folder Setup
-Set up your Rproject to include code, data, document, figs, data/prior_weeks_data, and output folders. Make sure the .gitignore file contains:   
+Set up your Rproject to include code, data, document, figs, data/prior_weeks_data, data/yyyy_inseason, and output folders. Make sure the .gitignore file contains:   
 Taku*
 figs 
 *.csv
+*.pdf
 so that ouput and data from inseason estimates is not committed to GitHub.
 The code files that are necessary to run the analysis are the inseason_analysis.R and the functions.R files.
 
