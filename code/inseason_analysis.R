@@ -1,5 +1,5 @@
 # load libraries
-#devtools::install_github("cschwarz-stat-sfu-ca/BTSPAS", dependencies = TRUE, build_vignettes = TRUE) #only load once then comment out
+# devtools::install_github("cschwarz-stat-sfu-ca/BTSPAS", dependencies = TRUE, build_vignettes = TRUE) #only load once then comment out
 library(BTSPAS) 
 library(ggplot2)
 library(lubridate)
@@ -144,7 +144,7 @@ hw.data <- BTSPAS_input(relrecap, catch, "ReleaseHalfStatWeek", "RecoveryHalfSta
 
 # fit the BTSPAS model
 hw.prefix <- gsub("FW","HW",fw.prefix)
-fit.BTSPAS(hw.data,prefix=hw.prefix, add.ones.at.start=TRUE)
+fit.BTSPAS(hw.data,prefix=hw.prefix, add.ones.at.start=FALSE)
 
 # fit the BTSPAS model with fall back (say n=50, x=11)
 hw.prefix.dropout <- gsub("FW","HW",fw.prefix.dropout)
@@ -159,7 +159,7 @@ file.names.fits<- file.names[grepl(paste("^Taku-"), file.names)]
 file.names.fits
 
 # make a pdf file of the fitted curves
-pdf(paste("output/Inseason-all-fits.pdf",sep=""))
+pdf(paste("Inseason-all-fits.pdf",sep=""))
 plyr::l_ply(file.names.fits, function(x){
   cat("Extracting final plot from ", x, "\n")
   load(file.path(x, "taku-fit-tspndenp-saved.Rdata"))
