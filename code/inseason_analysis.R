@@ -1,9 +1,10 @@
 # load libraries
+devtools::install_github("cschwarz-stat-sfu-ca/BTSPAS", dependencies = TRUE, build_vignettes = TRUE)
 library(BTSPAS) ##
 library(ggplot2)
 library(lubridate)
 library(filesstrings)
-#devtools::install_github("cschwarz-stat-sfu-ca/BTSPAS", dependencies = TRUE, build_vignettes = TRUE)
+
 source("code/functions.R")
 
 fw.stat.weeks <- 23:28   # stat weeks with releases and recoveries to  be included
@@ -11,19 +12,19 @@ Year<-2018 #input year
 
 # load data and ensure variable names match
 #change data location to sharepoint!!!!
-read.csv('data/release_data.csv', header=TRUE, as.is=TRUE, strip.white=TRUE) -> release
+read.csv('2019_inseason/data/release_data.csv', header=TRUE, as.is=TRUE, strip.white=TRUE) -> release
 release$ReleaseDate <- lubridate::ymd(release$ReleaseDate)
 dim(release)
 release <- release[ !is.na(release$ReleaseDate),]
 dim(release)
 head(release)
 
-read.csv('data/recovery_data.csv', header=TRUE, as.is=TRUE, strip.white=TRUE) -> recap
+read.csv('2019_inseason/data/recovery_data.csv', header=TRUE, as.is=TRUE, strip.white=TRUE) -> recap
 recap$RecoveryDate <- lubridate::ymd(recap$RecoveryDate)
 recap$RecoveryType <- "Commercial"
 head(recap)
 
-read.csv('data/catch_data.csv', header=TRUE, as.is=TRUE, strip.white=TRUE) -> catch
+read.csv('2019_inseason/data/catch_data.csv', header=TRUE, as.is=TRUE, strip.white=TRUE) -> catch
 catch$Date <- lubridate::ymd(catch$Date)
 catch <- plyr::rename(catch, c("Date"="RecoveryDate",
                                "StatWeek"="RecoveryStatWeek",

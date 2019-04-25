@@ -16,10 +16,9 @@ version 2019.01.07.
 
 # Project Folder Setup
 Set up your Rproject to include code, data, document, figs, data/prior_weeks_data, and output folders. Make sure the .gitignore file contains:   
-output/   
-figs/  
-data/  
-Taku*/   
+Taku*
+figs 
+*.csv
 so that ouput and data from inseason estimates is not committed to GitHub.
 The code files that are necessary to run the analysis are the inseason_analysis.R and the functions.R files.
 
