@@ -380,9 +380,7 @@ fit.BTSPAS.dropout <- function( input.data, prefix="BTSPAS", debug=FALSE, n, dro
   setwd("..")# return back
 }
 
-
-#####################################################
-#####################################################
+#The code below is not needed for inseason estimates.
 BTSPAS_input_from_matrix <- function(sheet, workbook){
   # read the worksheet from the workbook and creates the data structures for BTSPAS input from
   # summary data at the stat week for prior years

@@ -3,14 +3,14 @@ devtools::install_github("cschwarz-stat-sfu-ca/BTSPAS", dependencies = TRUE, bui
 library(BTSPAS) 
 library(ggplot2)
 library(lubridate)
-library(filesstrings)
+library(fs)
 
 source(file.path("code","functions.R"))
 
 
 fw.stat.weeks <- 23:28   # stat weeks with releases and recoveries to  be included
 Year<-2018 # input year
-data.directory <-file.path('data','2018_inseason')
+data.directory <-file.path('data','2019_inseason')
 
 # load data and ensure variable names match
 read.csv(file.path(data.directory,'release_data.csv'), header=TRUE, as.is=TRUE, strip.white=TRUE) -> release
@@ -21,7 +21,7 @@ dim(release)
 head(release)
 
 read.csv(file.path(data.directory,'recovery_data.csv'), header=TRUE, as.is=TRUE, strip.white=TRUE) -> recap
-recap$RecoveryDate <- lubridate::mdy(recap$RecoveryDate)  # *** CJS *** careful of data formats
+recap$RecoveryDate <- lubridate::ymd(recap$RecoveryDate)  # *** CJS *** careful of data formats
 recap$RecoveryType <- "Commercial"
 head(recap)
 
@@ -216,20 +216,20 @@ write.csv(run.pet.size,
 taku.prefix <- paste(fw.prefix,"-",Year, sep="")
 files_old <- paste0(getwd(), "/", taku.prefix)
 files_new <- paste0(getwd(), "/output/", taku.prefix)
-file.move(from = files_old, to = files_new)
+file_move(files_old, files_new)
 
 taku.prefix <- paste(fw.prefix.dropout,"-",Year, sep="")
 files_old <- paste0(getwd(), "/", taku.prefix)
 files_new <- paste0(getwd(), "/output/", taku.prefix)
-file.move(from = files_old, to = files_new)
+file_move(files_old, files_new)
 
 taku.prefix <- paste(hw.prefix,"-",Year, sep="")
 files_old <- paste0(getwd(), "/", taku.prefix)
 files_new <- paste0(getwd(), "/output/", taku.prefix)
-file.move(from = files_old, to = files_new)
+file_move(files_old, files_new)
 
 taku.prefix <- paste(hw.prefix.dropout,"-",Year, sep="")
 files_old <- paste0(getwd(), "/", taku.prefix)
 files_new <- paste0(getwd(), "/output/", taku.prefix)
-file.move(from = files_old, to = files_new)
+file_move(files_old, files_new)
 
