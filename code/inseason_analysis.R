@@ -6,6 +6,7 @@ library(ggplot2)
 library(lubridate)
 library(fs)
 library(devtools)
+library(rjags)
 
 devtools::source_url("https://raw.githubusercontent.com/cschwarz-stat-sfu-ca/taku/master/FUNCTIONS_BTSPAS_Wrappers.R")
 
