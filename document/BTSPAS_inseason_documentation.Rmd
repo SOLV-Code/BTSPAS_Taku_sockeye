@@ -23,9 +23,8 @@ https://www.rstudio.com/
 Download JAGS from: https://sourceforge.net/projects/mcmc-jags/files/latest/download.
 
 # Project Folder Setup
-Set up your Rproject to include code, data, document, figs, data/prior_weeks_data, data/yyyy_inseason, and output folders. Make sure the .gitignore file contains:   
+Set up your Rproject to include code, data, document, data/prior_weeks_data, data/*yyyy*_inseason, and output folders. Make sure the .gitignore file contains:   
 Taku*
-figs 
 *.csv
 *.pdf
 so that ouput and data from inseason estimates is not committed to GitHub.
@@ -60,16 +59,16 @@ The only two inputs needed for the code to run are the stat weeks and the year.
 Input these at the top of the inseason_analysis.R code.
 
 fw.stat.weeks <- 23:28   # stat weeks with releases and recoveries to  be included  
-Year <- 2017 #input year
+Year <- 2019 #input year
 data.directory <-file.path('data','2019_inseason') #directory for current year
 
 Select the stat weeks for which you want the BTSPAS to provide estimates on a FW and HW basis. Change the above code to account for which weeks of data will be used in the estimate.
 
-After reading in the data and doing various merges, the inseason_analysis.R code will create a series of directories in the current workspace that will accumulate as you run the code each week. This code will compute the Full Week (FW), and Half week (HW) stratified with and without dropout. The output files will appear in the output folder as:  
-"Taku-FW-Inseason-Wxx-Wxx--YYYY,"  
-"Taku-HW-Inseason-Wxx-Wxx--YYYY,"  
-"Taku-FW-Inseason-Wxx-Wxx-fallback--YYYY," and  
-"Taku-HW-Inseason-Wxx-Wxx-fallback-YYYY," where *x* is the stat week numbers and *YYYY* is the year.  
+After reading in the data and doing various merges, the inseason_analysis.R code will create a series of directories in the current workspace that will accumulate as you run the code each week. This code will compute the Full Week and Half week stratified with and without dropout. The output files will appear in the output folder as:  
+"Taku-FullWeek-Inseason-Wxx-Wxx--YYYY,"  
+"Taku-HalfWeek-Inseason-Wxx-Wxx--YYYY,"  
+"Taku-FullWeek-Inseason-Wxx-Wxx-fallback--YYYY," and  
+"Taku-HalfWeek-Inseason-Wxx-Wxx-fallback-YYYY," where *x* is the stat week numbers and *YYYY* is the year.  
 
 ##Dropout rate
 Model the year-to-year variation in drop out (including sampling uncertainty) as binomial with n =  50  and x= 11 
