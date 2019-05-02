@@ -1,16 +1,17 @@
 # load libraries
 devtools::install_github("cschwarz-stat-sfu-ca/BTSPAS", dependencies = TRUE, build_vignettes = TRUE) #only load once then comment out
+devtools::source_url("https://raw.githubusercontent.com/cschwarz-stat-sfu-ca/taku/master/FUNCTIONS_BTSPAS_Wrappers.R")
 library(BTSPAS) 
 library(ggplot2)
 library(lubridate)
-library(filesstrings)
+library(fs)
 
 devtools::source_url("https://raw.githubusercontent.com/cschwarz-stat-sfu-ca/taku/master/FUNCTIONS_BTSPAS_Wrappers.R")
 
 
 fw.stat.weeks <- 23:28   # stat weeks with releases and recoveries to  be included
 Year<-2018 # input year
-data.directory <-file.path('data','2018_inseason')
+data.directory <-file.path('data','2019_inseason')
 
 # load data and ensure variable names match
 read.csv(file.path(data.directory,'release_data.csv'), header=TRUE, as.is=TRUE, strip.white=TRUE) -> release
@@ -21,7 +22,7 @@ dim(release)
 head(release)
 
 read.csv(file.path(data.directory,'recovery_data.csv'), header=TRUE, as.is=TRUE, strip.white=TRUE) -> recap
-recap$RecoveryDate <- lubridate::mdy(recap$RecoveryDate)  # *** CJS *** careful of data formats
+recap$RecoveryDate <- lubridate::ymd(recap$RecoveryDate)  # *** CJS *** careful of data formats
 recap$RecoveryType <- "Commercial"
 head(recap)
 
@@ -163,7 +164,7 @@ file.names.fits<- file.names[grepl(paste("^Taku-"), file.names)]
 file.names.fits
 
 # make a pdf file of the fitted curves
-pdf(paste("Inseason-all-fits.pdf",sep=""))
+pdf(paste("output/Inseason-all-fits.pdf",sep=""))
 plyr::l_ply(file.names.fits, function(x){
   cat("Extracting final plot from ", x, "\n")
   load(file.path(x, "taku-fit-tspndenp-saved.Rdata"))
@@ -216,20 +217,20 @@ write.csv(run.pet.size,
 taku.prefix <- paste(fw.prefix,"-",Year, sep="")
 files_old <- paste0(getwd(), "/", taku.prefix)
 files_new <- paste0(getwd(), "/output/", taku.prefix)
-file.move(from = files_old, to = files_new)
+file_move(files_old, files_new)
 
 taku.prefix <- paste(fw.prefix.dropout,"-",Year, sep="")
 files_old <- paste0(getwd(), "/", taku.prefix)
 files_new <- paste0(getwd(), "/output/", taku.prefix)
-file.move(from = files_old, to = files_new)
+file_move(files_old, files_new)
 
 taku.prefix <- paste(hw.prefix,"-",Year, sep="")
 files_old <- paste0(getwd(), "/", taku.prefix)
 files_new <- paste0(getwd(), "/output/", taku.prefix)
-file.move(from = files_old, to = files_new)
+file_move(files_old, files_new)
 
 taku.prefix <- paste(hw.prefix.dropout,"-",Year, sep="")
 files_old <- paste0(getwd(), "/", taku.prefix)
 files_new <- paste0(getwd(), "/output/", taku.prefix)
-file.move(from = files_old, to = files_new)
+file_move(files_old, files_new)
 

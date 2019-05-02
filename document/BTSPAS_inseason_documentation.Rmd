@@ -15,6 +15,7 @@ Bonner, S. J. and Schwarz, C. J. (2019). BTSPAS: Bayesian Time Stratified Peters
 version 2019.01.07.
 
 # Project Folder Setup
+Update RStudio and R versions.
 Set up your Rproject to include code, data, document, figs, data/prior_weeks_data, data/yyyy_inseason, and output folders. Make sure the .gitignore file contains:   
 Taku*
 figs 
@@ -34,7 +35,7 @@ Release data should include the variable names: Year, TagID,  ReleaseDate, and R
 These three csv files should be the master files, updated weekly, and then placed in the data folder. Old versions of weekly data should be kept in the data/prior_weeks_data folder. The data files should be 'clean' data and free of NAs or missing information (i.e. missing recovery dates or tag id numbers).
 
 Download the latest version of BTSPAS from the GitHub site at https://github.com/cschwarz-stat-sfu-ca/BTSPAS using devtools::install_github("cschwarz-stat-sfu-ca/BTSPAS", dependencies = TRUE, build_vignettes = TRUE)
-This could take up to 20 minutes because the vignettes take a long time to compile.
+This could take up to 20 minutes because the vignettes take a long time to compile. 
 
 #Analysis
 All packages need to be loaded prior to running models. These pacakges are located at the top of the inseason_analysis.R file. The functions.R file is sourced within the inseason_analysis.R file.
