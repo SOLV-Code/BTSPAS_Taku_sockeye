@@ -5,7 +5,7 @@ library(ggplot2)
 library(lubridate)
 library(filesstrings)
 
-source(file.path("code","functions.R"))
+devtools::source_url("https://raw.githubusercontent.com/cschwarz-stat-sfu-ca/taku/master/FUNCTIONS_BTSPAS_Wrappers.R")
 
 
 fw.stat.weeks <- 23:28   # stat weeks with releases and recoveries to  be included
