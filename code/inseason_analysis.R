@@ -12,7 +12,7 @@ library(readxl)
 
 source('code/functions.R')
 
-fw.stat.weeks <- 23:36   # stat weeks with releases and recoveries to  be included
+fw.stat.weeks <- 23:29   # stat weeks with releases and recoveries to  be included
 Year<-2018 # input year
 data.directory <-file.path('data','2019_inseason')
 
@@ -125,13 +125,13 @@ fw.data <- BTSPAS_input(relrecap, catch, "ReleaseStatWeek", "RecoveryStatWeek",
                         fw.stratum.index, catch.var="CatchWithTags")
 
 # fit the BTSPAS model
-fw.prefix <- paste("Taku-FW-Inseason-W",round(min(fw.stat.weeks)),
+fw.prefix <- paste("Taku-FullWeek-Inseason-W",round(min(fw.stat.weeks)),
                    "-W",round(max(fw.stat.weeks)),"-",sep="")
 
 fit.BTSPAS(fw.data,prefix=fw.prefix, add.ones.at.start=TRUE)
 
 # fit the BTSPAS model with fall back (say n=50, x=11)
-fw.prefix.dropout <- paste("Taku-FW-Inseason-W",round(min(fw.stat.weeks)),
+fw.prefix.dropout <- paste("Taku-FullWeek-Inseason-W",round(min(fw.stat.weeks)),
                            "-W",round(max(fw.stat.weeks)),"-fallback-",sep="")
 
 fit.BTSPAS.dropout(fw.data,prefix=fw.prefix.dropout, n=50, dropout=11, add.ones.at.start=TRUE)
@@ -151,11 +151,11 @@ hw.data <- BTSPAS_input(relrecap, catch, "ReleaseHalfStatWeek", "RecoveryHalfSta
                         hw.stratum.index, catch.var="CatchWithTags")
 
 # fit the BTSPAS model
-hw.prefix <- gsub("FW","HW",fw.prefix)
+hw.prefix <- gsub("FullWeek","HalfWeek",fw.prefix)
 fit.BTSPAS(hw.data,prefix=hw.prefix, add.ones.at.start=TRUE)
 
 # fit the BTSPAS model with fall back (say n=50, x=11)
-hw.prefix.dropout <- gsub("FW","HW",fw.prefix.dropout)
+hw.prefix.dropout <- gsub("FullWeek","HalfWeek",fw.prefix.dropout)
 fit.BTSPAS.dropout(hw.data,prefix=hw.prefix.dropout, n=50, dropout=11, add.ones.at.start=TRUE)
 
 # Make a table of the estimates from the various sets of weeks etc
