@@ -15,6 +15,7 @@ Bonner, S. J. and Schwarz, C. J. (2019). BTSPAS: Bayesian Time Stratified Peters
 version 2019.01.07.
 
 # Project Folder Setup
+Update RStudio and R versions.
 Set up your Rproject to include code, data, document, figs, data/prior_weeks_data, data/yyyy_inseason, and output folders. Make sure the .gitignore file contains:   
 Taku*
 figs 
