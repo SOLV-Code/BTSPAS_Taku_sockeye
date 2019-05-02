@@ -167,7 +167,10 @@ file.names.fits<- file.names[grepl(paste("^Taku-"), file.names)]
 file.names.fits
 
 # make a pdf file of the fitted curves
-pdf(paste("output/Inseason-all-fits.pdf",sep=""))
+prefix <- paste("Taku-Inseason-W",round(min(fw.stat.weeks)),
+                "-W",round(max(fw.stat.weeks)),"-",sep="")
+pdf(paste("output/",prefix,"-Inseason_fits.pdf",sep=""))
+#pdf(paste("output/Inseason-all-fits.pdf",sep=""))
 plyr::l_ply(file.names.fits, function(x){
   cat("Extracting final plot from ", x, "\n")
   load(file.path(x, "taku-fit-tspndenp-saved.Rdata"))
@@ -192,8 +195,7 @@ run.size <- plyr::ldply(file.names.fits, function(x){
   Ntot
 })
 run.size
-write.csv(run.size,
-          file=paste("output/inseason-run.size.csv",sep=""))
+write.csv(run.size, paste("output/",prefix,"-Inseason_runsize.csv",sep=""), row.names=TRUE)
 
 # Extract the Petersen estimators
 # Extract all of the estimates of the total run size
@@ -213,8 +215,7 @@ run.pet.size <- plyr::ldply(file.names.fits, function(x){
     file=x)
 })
 run.pet.size
-write.csv(run.pet.size,
-          file="output/Inseason-PP.run.size.csv")
+write.csv(run.pet.size, paste("output/",prefix,"-Inseason_PP_runsize.csv",sep=""), row.names=TRUE)
 
 #move files to correct directory
 taku.prefix <- paste(fw.prefix,"-",Year, sep="")
