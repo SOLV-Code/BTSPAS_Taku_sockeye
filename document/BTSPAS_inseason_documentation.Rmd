@@ -14,7 +14,6 @@ Reference for BTSPAS function:
 Bonner, S. J. and Schwarz, C. J. (2019). BTSPAS: Bayesian Time Stratified Petersen Analysis System.R package
 version 2019.01.07.
 
-# Project Folder Setup
 Install/Update R:
 https://cran.r-project.org/
 
@@ -23,6 +22,7 @@ https://www.rstudio.com/
 
 Download JAGS from: https://sourceforge.net/projects/mcmc-jags/files/latest/download.
 
+# Project Folder Setup
 Set up your Rproject to include code, data, document, figs, data/prior_weeks_data, data/yyyy_inseason, and output folders. Make sure the .gitignore file contains:   
 Taku*
 figs 
