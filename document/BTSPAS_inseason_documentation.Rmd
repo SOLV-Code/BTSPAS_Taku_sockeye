@@ -15,7 +15,14 @@ Bonner, S. J. and Schwarz, C. J. (2019). BTSPAS: Bayesian Time Stratified Peters
 version 2019.01.07.
 
 # Project Folder Setup
-Update RStudio and R versions. Download JAGS from: https://sourceforge.net/projects/mcmc-jags/files/latest/download.
+Install/Update R:
+https://cran.r-project.org/
+
+Install/Update R Studio:
+https://www.rstudio.com/
+
+Download JAGS from: https://sourceforge.net/projects/mcmc-jags/files/latest/download.
+
 Set up your Rproject to include code, data, document, figs, data/prior_weeks_data, data/yyyy_inseason, and output folders. Make sure the .gitignore file contains:   
 Taku*
 figs 
