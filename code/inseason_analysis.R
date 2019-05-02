@@ -9,9 +9,8 @@ library(devtools)
 library(rjags)
 library(cellranger)
 library(readxl)
-source('code/functions.R')
-devtools::source_url("https://raw.githubusercontent.com/cschwarz-stat-sfu-ca/taku/master/FUNCTIONS_BTSPAS_Wrappers.R")
 
+source('code/functions.R')
 
 fw.stat.weeks <- 23:36   # stat weeks with releases and recoveries to  be included
 Year<-2018 # input year
