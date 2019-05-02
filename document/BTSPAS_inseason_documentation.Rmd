@@ -55,14 +55,14 @@ This is stratum index, n1, m2, and u2. The variable n1 is the number of tagged r
 3. fit.BTSPAS.dropout = fits input data to BTSPAS allowing for dropout/fallback
 
 #Inseason Estimates for Taku River
-The only two inputs needed for the code to run are the stat weeks and the year.
+The only two inputs needed for the code to run are the stat weeks, year, and data.directory call.
 Input these at the top of the inseason_analysis.R code.
 
-fw.stat.weeks <- 23:28   # stat weeks with releases and recoveries to  be included  
-Year <- 2019 #input year
-data.directory <-file.path('data','2019_inseason') #directory for current year
+(1) fw.stat.weeks <- 23:28   # stat weeks with releases and recoveries to  be included  
+(2) Year <- 2019 #input year
+(3) data.directory <-file.path('data','2019_inseason') #directory for current year
 
-Select the stat weeks for which you want the BTSPAS to provide estimates on a FW and HW basis. Change the above code to account for which weeks of data will be used in the estimate.
+Select the stat weeks for which you want the BTSPAS to provide estimates on a FW and HW basis. Change the above code to account for which weeks of data will be used in the estimate. There should be a folder in the data folder for *yyyy*_inseason.
 
 After reading in the data and doing various merges, the inseason_analysis.R code will create a series of directories in the current workspace that will accumulate as you run the code each week. This code will compute the Full Week and Half week stratified with and without dropout. The output files will appear in the output folder as:  
 "Taku-FullWeek-Inseason-Wxx-Wxx--YYYY,"  
@@ -70,6 +70,17 @@ After reading in the data and doing various merges, the inseason_analysis.R code
 "Taku-FullWeek-Inseason-Wxx-Wxx-fallback--YYYY," and  
 "Taku-HalfWeek-Inseason-Wxx-Wxx-fallback-YYYY," where *x* is the stat week numbers and *YYYY* is the year.  
 
+In the functions of fit.BTSPAS and fit.BTSPAS.dropout, if the Canadian commercial sockeye fishery does not commence until 2 or more weeks after sockeye are tagged in the fishwheels, then the "add.ones.at.start=TRUE" hack should be implemented inseason. If the 'hack' is implemented in the first weeks of estimates, it should be used the entire season (along with postseason). There are four functions in the code that need to be changed.
+
+fit.BTSPAS(fw.data,prefix=fw.prefix, add.ones.at.start=FALSE)
+fit.BTSPAS.dropout(fw.data,prefix=fw.prefix.dropout, n=50, dropout=11, add.ones.at.start=FALSE)
+fit.BTSPAS(hw.data,prefix=hw.prefix, add.ones.at.start=FALSE)
+fit.BTSPAS.dropout(hw.data,prefix=hw.prefix.dropout, n=50, dropout=11, add.ones.at.start=FALSE)
+
+The code to implement the inseason estimates are not expanded by fishwheel runtiming.
+
+The weekly inseason estimate should be the median (50%) estimate from the file/folder 'Taku-FullWeek-Inseason-Wxx-Wxx-fallback--2019' output to the file 'inseason-run.siz.csv.  
+
 ##Dropout rate
 Model the year-to-year variation in drop out (including sampling uncertainty) as binomial with n =  50  and x= 11 
-which gives p(dropout)= 0.22 and standard deviation of 0.05938262.
+which gives *p*(dropout)= 0.22 and standard deviation of 0.05938262.
