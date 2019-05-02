@@ -20,7 +20,7 @@ https://cran.r-project.org/
 Install/Update R Studio:
 https://www.rstudio.com/
 
-Download JAGS from: https://sourceforge.net/projects/mcmc-jags/files/latest/download.
+Install JAGS from: https://sourceforge.net/projects/mcmc-jags/files/latest/download.
 
 # Project Folder Setup
 Set up your Rproject to include code, data, document, data/prior_weeks_data, data/*yyyy*_inseason, and output folders. Make sure the .gitignore file contains:   
