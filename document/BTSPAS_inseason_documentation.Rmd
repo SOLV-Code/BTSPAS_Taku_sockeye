@@ -46,7 +46,7 @@ Data files will be provided on a weekly basis from the tagging crews and DFO and
 Release data should include the variable names: 
 
 * *Year*, 
-* *TagID*,  
+* *TagID*,
 * *ReleaseDate*, and 
 * *ReleaseStatWeek* (which starts on Sunday). 
 
@@ -132,7 +132,7 @@ where *x* is the stat week numbers and *YYYY* is the year.
 
 If the Canadian commercial sockeye fishery 
 does not commence until 2 or more weeks after sockeye are tagged in the fishwheels, 
-then the `add.ones.at.start=TRUE` argument should be specied in
+then the `add.ones.at.start=TRUE` argument should be specified in
 the `fit.BTSPAS()` and `fit.BTSPAS.dropout()` functions to force the fitted
 curve to go to zero in the weeks when the fishery was not operating. 
 If the `add.ones.at.start=TRUE` argument is used in the first weeks of estimates, it should be 
@@ -151,4 +151,4 @@ output to the file 'inseason-run.size.csv.
 
 ## Dropout rate
 Model the year-to-year variation in drop out (including sampling uncertainty) as binomial with $n =  50$  and $x= 11$ 
-which gives mean $p_{dropout}= 0.22$ with a standard deviation of $0.05938262$. **I thought this was changed to n=52 and x=13**?
+which gives mean $p_{dropout}= 0.22$ with a standard deviation of $0.05938262$. 
