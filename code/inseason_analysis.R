@@ -1,5 +1,5 @@
 # load libraries
-devtools::install_github("cschwarz-stat-sfu-ca/BTSPAS", dependencies = TRUE, build_vignettes = TRUE) #only load once then comment out
+#devtools::install_github("cschwarz-stat-sfu-ca/BTSPAS", dependencies = TRUE, build_vignettes = TRUE) #only load once then comment out
 devtools::source_url("https://raw.githubusercontent.com/cschwarz-stat-sfu-ca/taku/master/FUNCTIONS_BTSPAS_Wrappers.R")
 library(BTSPAS) 
 library(ggplot2)
@@ -10,11 +10,9 @@ library(rjags)
 library(cellranger)
 library(readxl)
 
-source('code/functions.R')
-
 fw.stat.weeks <- 23:29   # stat weeks with releases and recoveries to  be included
 Year<-2018 # input year
-data.directory <-file.path('data','2019_inseason')
+data.directory <-file.path('data','2018_inseason')
 
 # load data and ensure variable names match
 read.csv(file.path(data.directory,'release_data.csv'), header=TRUE, as.is=TRUE, strip.white=TRUE) -> release
@@ -25,11 +23,12 @@ dim(release)
 head(release)
 
 read.csv(file.path(data.directory,'recovery_data.csv'), header=TRUE, as.is=TRUE, strip.white=TRUE) -> recap
-recap$RecoveryDate <- lubridate::ymd(recap$RecoveryDate)  # *** CJS *** careful of data formats
+recap$RecoveryDate <- lubridate::mdy(recap$RecoveryDate)  # *** CJS *** careful of data formats
 recap$RecoveryType <- "Commercial"
 head(recap)
 
 read.csv(file.path(data.directory,'catch_data.csv'), header=TRUE, as.is=TRUE, strip.white=TRUE) -> catch
+head(catch)
 catch$Date <- lubridate::ymd(catch$Date)
 catch <- plyr::rename(catch, c("Date"="RecoveryDate",
                                "StatWeek"="RecoveryStatWeek",
@@ -169,8 +168,7 @@ file.names.fits
 # make a pdf file of the fitted curves
 prefix <- paste("Taku-Inseason-W",round(min(fw.stat.weeks)),
                 "-W",round(max(fw.stat.weeks)),"-",sep="")
-pdf(paste("output/",prefix,"-Inseason_fits.pdf",sep=""))
-#pdf(paste("output/Inseason-all-fits.pdf",sep=""))
+pdf(file.path("output",paste(prefix,"-Inseason_fits.pdf",sep="")))
 plyr::l_ply(file.names.fits, function(x){
   cat("Extracting final plot from ", x, "\n")
   load(file.path(x, "taku-fit-tspndenp-saved.Rdata"))
@@ -195,7 +193,7 @@ run.size <- plyr::ldply(file.names.fits, function(x){
   Ntot
 })
 run.size
-write.csv(run.size, paste("output/",prefix,"-Inseason_runsize.csv",sep=""), row.names=TRUE)
+write.csv(run.size, file.path("output",paste(prefix,"-Inseason_runsize.csv",sep="")), row.names=TRUE)
 
 # Extract the Petersen estimators
 # Extract all of the estimates of the total run size
@@ -215,7 +213,7 @@ run.pet.size <- plyr::ldply(file.names.fits, function(x){
     file=x)
 })
 run.pet.size
-write.csv(run.pet.size, paste("output/",prefix,"-Inseason_PP_runsize.csv",sep=""), row.names=TRUE)
+write.csv(run.pet.size,file.path("output",paste(prefix,"-Inseason_PP_runsize.csv",sep="")), row.names=TRUE)
 
 #move files to correct directory
 taku.prefix <- paste(fw.prefix,"-",Year, sep="")
