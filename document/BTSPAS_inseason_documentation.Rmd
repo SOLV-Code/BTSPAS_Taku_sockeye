@@ -3,9 +3,9 @@ title: "Directions for Inseason Estimates for Taku River Sockeye Salmon Using BT
 author: "Sara Miller"
 date: '2019-05-02'
 output:
-  pdf_document: default
   html_document:
     df_print: paged
+  pdf_document: default
   word_document: default
 ---
 ```{r setup, echo = FALSE}
