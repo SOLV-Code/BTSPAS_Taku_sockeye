@@ -1,6 +1,17 @@
 # load libraries
-#devtools::install_github("cschwarz-stat-sfu-ca/BTSPAS", dependencies = TRUE, build_vignettes = TRUE) #only load once then comment out
-devtools::source_url("https://raw.githubusercontent.com/cschwarz-stat-sfu-ca/taku/master/FUNCTIONS_BTSPAS_Wrappers.R")
+devtools::install_github("cschwarz-stat-sfu-ca/BTSPAS", dependencies = TRUE, build_vignettes = TRUE) #only load once then comment out
+# check if the URL exists (i.e. have internet connection and correct URL)
+library(RCurl)
+url.check <- url.exists("https://raw.githubusercontent.com/cschwarz-stat-sfu-ca/taku/master/FUNCTIONS_BTSPAS_Wrappers.R")
+
+# load functions from url or local source
+if(url.check){
+  library(devtools)
+  devtools::source_url("https://raw.githubusercontent.com/cschwarz-stat-sfu-ca/taku/master/FUNCTIONS_BTSPAS_Wrappers.R")
+}
+
+if(!url.check){ source("../CODE/Local Copies of Carl Functions/FUNCTIONS_BTSPAS_Wrappers.R") }
+
 library(BTSPAS) 
 library(ggplot2)
 library(lubridate)
