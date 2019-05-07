@@ -3,9 +3,9 @@ title: "Directions for Inseason Estimates for Taku River Sockeye Salmon Using BT
 author: "Sara Miller"
 date: '2019-05-02'
 output:
+  pdf_document: default
   html_document:
     df_print: paged
-  pdf_document: default
   word_document: default
 ---
 ```{r setup, echo = FALSE}
@@ -146,8 +146,8 @@ argument needs to changed from a *FALSE* to *TRUE* (Be careful that *TRUE* is al
 
 The code to implement the inseason estimates are not expanded by fishwheel runtiming.
 
-The weekly inseason estimate should be the mean estimate from the file/folder *Taku-FullWeek-Inseason-Wxx-Wxx-fallback--yyyy*'*
-output to the file 'Taku-Inseason-W*xx*-W*xx*--Inseason-run.size.csv.  
+The weekly inseason estimate should be the mean estimate from the file/folder '*Taku-FullWeek-Inseason-Wxx-Wxx-fallback--yyyy*'*
+output to the file 'Taku-Inseason-W*xx*-W*xx*--*yyyy*Inseason-run.size.csv.  
 
 ## Dropout rate
 Model the year-to-year variation in drop out (including sampling uncertainty) as binomial with $n =  50$  and $x= 11$ 
