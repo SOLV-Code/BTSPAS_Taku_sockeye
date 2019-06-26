@@ -83,6 +83,7 @@ Download the latest version of BTSPAS from the GitHub site at https://github.com
 using `devtools::install_github("cschwarz-stat-sfu-ca/BTSPAS", dependencies = TRUE, build_vignettes = TRUE)`.
 This could take up to 20 minutes because the vignettes take a long time to compile. This only needs to be done
 once at the start of the season (unless an important update is made to the BTSPAS package.)
+You may need to type in '3' even though this choice is 'NONE.' Need to talk to Carl about possible glitch.
 
 # Analysis
 All required packages need for the analysis are  loaded prior to running models.
