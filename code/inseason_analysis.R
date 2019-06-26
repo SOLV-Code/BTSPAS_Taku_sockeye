@@ -31,7 +31,7 @@ release$ReleaseDate <- lubridate::ymd(release$ReleaseDate)
 dim(release)
 release <- release[ !is.na(release$ReleaseDate),]
 dim(release)
-head(release)#aaron added a comment
+head(release)
 
 read.csv(file.path(data.directory,'recovery_data.csv'), header=TRUE, as.is=TRUE, strip.white=TRUE) -> recap
 recap$RecoveryDate <- lubridate::mdy(recap$RecoveryDate)  # *** CJS *** careful of data formats
