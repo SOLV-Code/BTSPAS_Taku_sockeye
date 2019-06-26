@@ -1,5 +1,5 @@
 # load libraries
-#devtools::install_github("cschwarz-stat-sfu-ca/BTSPAS", dependencies = TRUE, build_vignettes = TRUE) #only load once then comment out
+# devtools::install_github("cschwarz-stat-sfu-ca/BTSPAS", dependencies = TRUE, build_vignettes = TRUE) #only load once then comment out
 # check if the URL exists (i.e. have internet connection and correct URL)
 library(RCurl)
 url.check <- url.exists("https://raw.githubusercontent.com/cschwarz-stat-sfu-ca/taku/master/FUNCTIONS_BTSPAS_Wrappers.R")
@@ -31,7 +31,7 @@ release$ReleaseDate <- lubridate::ymd(release$ReleaseDate)
 dim(release)
 release <- release[ !is.na(release$ReleaseDate),]
 dim(release)
-head(release)
+head(release)#aaron added a comment
 
 read.csv(file.path(data.directory,'recovery_data.csv'), header=TRUE, as.is=TRUE, strip.white=TRUE) -> recap
 recap$RecoveryDate <- lubridate::mdy(recap$RecoveryDate)  # *** CJS *** careful of data formats
