@@ -1,5 +1,5 @@
 # load libraries
-devtools::install_github("cschwarz-stat-sfu-ca/BTSPAS", dependencies = TRUE, build_vignettes = TRUE) #only load once then comment out
+#devtools::install_github("cschwarz-stat-sfu-ca/BTSPAS", dependencies = TRUE, build_vignettes = TRUE) #only load once then comment out
 # check if the URL exists (i.e. have internet connection and correct URL)
 library(RCurl)
 url.check <- url.exists("https://raw.githubusercontent.com/cschwarz-stat-sfu-ca/taku/master/FUNCTIONS_BTSPAS_Wrappers.R")
@@ -21,9 +21,9 @@ library(rjags)
 library(cellranger)
 library(readxl)
 
-fw.stat.weeks <- 23:29   # stat weeks with releases and recoveries to  be included
-Year<-2018 # input year
-data.directory <-file.path('data','2018_inseason')
+fw.stat.weeks <- 23:27   # stat weeks with releases and recoveries to  be included
+Year<-2019 # input year
+data.directory <-file.path('data','2019_inseason')
 
 # load data and ensure variable names match
 read.csv(file.path(data.directory,'release_data.csv'), header=TRUE, as.is=TRUE, strip.white=TRUE) -> release
