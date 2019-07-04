@@ -138,13 +138,13 @@ fw.data <- BTSPAS_input(relrecap, catch, "ReleaseStatWeek", "RecoveryStatWeek",
 fw.prefix <- paste("Taku-FullWeek-Inseason-W",round(min(fw.stat.weeks)),
                    "-W",round(max(fw.stat.weeks)),"-",sep="")
 
-fit.BTSPAS(fw.data,prefix=fw.prefix, add.ones.at.start=TRUE)
+fit.BTSPAS(fw.data,prefix=fw.prefix, add.ones.at.start=TRUE, InitialSeed=2327)
 
 # fit the BTSPAS model with fall back (say n=50, x=11)
 fw.prefix.dropout <- paste("Taku-FullWeek-Inseason-W",round(min(fw.stat.weeks)),
                            "-W",round(max(fw.stat.weeks)),"-fallback-",sep="")
 
-fit.BTSPAS.dropout(fw.data,prefix=fw.prefix.dropout, n=50, dropout=11, add.ones.at.start=TRUE)
+fit.BTSPAS.dropout(fw.data,prefix=fw.prefix.dropout, n=50, dropout=11, add.ones.at.start=TRUE, IntialSeed=2327)
 
 # Half Week BTSPAS analysis
 # Define the stratum variable as 1 = first stat week, 2=second stat week etc
@@ -162,11 +162,11 @@ hw.data <- BTSPAS_input(relrecap, catch, "ReleaseHalfStatWeek", "RecoveryHalfSta
 
 # fit the BTSPAS model
 hw.prefix <- gsub("FullWeek","HalfWeek",fw.prefix)
-fit.BTSPAS(hw.data,prefix=hw.prefix, add.ones.at.start=TRUE)
+fit.BTSPAS(hw.data,prefix=hw.prefix, add.ones.at.start=TRUE, InitialSeed=2327)
 
 # fit the BTSPAS model with fall back (say n=50, x=11)
 hw.prefix.dropout <- gsub("FullWeek","HalfWeek",fw.prefix.dropout)
-fit.BTSPAS.dropout(hw.data,prefix=hw.prefix.dropout, n=50, dropout=11, add.ones.at.start=TRUE)
+fit.BTSPAS.dropout(hw.data,prefix=hw.prefix.dropout, n=50, dropout=11, add.ones.at.start=TRUE, InitialSeed=2327)
 
 # Make a table of the estimates from the various sets of weeks etc
 # Extract the results from the various fits
