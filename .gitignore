@@ -2,8 +2,7 @@
 .Rhistory
 .RData
 .Ruserdata
-#do not commit output for inseason estimates
-output/ 
-Taku*/
-figs/ 
-data/ 
+Taku*
+figs 
+*.csv
+*.pdf

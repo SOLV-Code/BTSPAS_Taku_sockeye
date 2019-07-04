@@ -1,29 +1,45 @@
 # load libraries
-library(BTSPAS) ##
+devtools::install_github("cschwarz-stat-sfu-ca/BTSPAS", dependencies = TRUE, build_vignettes = TRUE) #only load once then comment out
+# check if the URL exists (i.e. have internet connection and correct URL)
+library(RCurl)
+url.check <- url.exists("https://raw.githubusercontent.com/cschwarz-stat-sfu-ca/taku/master/FUNCTIONS_BTSPAS_Wrappers.R")
+
+# load functions from url or local source
+if(url.check){
+  library(devtools)
+  devtools::source_url("https://raw.githubusercontent.com/cschwarz-stat-sfu-ca/taku/master/FUNCTIONS_BTSPAS_Wrappers.R")
+}
+
+if(!url.check){ source("../CODE/Local Copies of Carl Functions/FUNCTIONS_BTSPAS_Wrappers.R") }
+
+library(BTSPAS) 
 library(ggplot2)
 library(lubridate)
-library(filesstrings)
-#devtools::install_github("cschwarz-stat-sfu-ca/BTSPAS", dependencies = TRUE, build_vignettes = TRUE)
-source("code/functions.R")
+library(fs)
+library(devtools)
+library(rjags)
+library(cellranger)
+library(readxl)
 
-fw.stat.weeks <- 23:28   # stat weeks with releases and recoveries to  be included
-Year<-2018 #input year
+fw.stat.weeks <- 23:29   # stat weeks with releases and recoveries to  be included
+Year<-2018 # input year
+data.directory <-file.path('data','2018_inseason')
 
 # load data and ensure variable names match
-#change data location to sharepoint!!!!
-read.csv('data/release_data.csv', header=TRUE, as.is=TRUE, strip.white=TRUE) -> release
+read.csv(file.path(data.directory,'release_data.csv'), header=TRUE, as.is=TRUE, strip.white=TRUE) -> release
 release$ReleaseDate <- lubridate::ymd(release$ReleaseDate)
 dim(release)
 release <- release[ !is.na(release$ReleaseDate),]
 dim(release)
 head(release)
 
-read.csv('data/recovery_data.csv', header=TRUE, as.is=TRUE, strip.white=TRUE) -> recap
-recap$RecoveryDate <- lubridate::ymd(recap$RecoveryDate)
+read.csv(file.path(data.directory,'recovery_data.csv'), header=TRUE, as.is=TRUE, strip.white=TRUE) -> recap
+recap$RecoveryDate <- lubridate::mdy(recap$RecoveryDate)  # *** CJS *** careful of data formats
 recap$RecoveryType <- "Commercial"
 head(recap)
 
-read.csv('data/catch_data.csv', header=TRUE, as.is=TRUE, strip.white=TRUE) -> catch
+read.csv(file.path(data.directory,'catch_data.csv'), header=TRUE, as.is=TRUE, strip.white=TRUE) -> catch
+head(catch)
 catch$Date <- lubridate::ymd(catch$Date)
 catch <- plyr::rename(catch, c("Date"="RecoveryDate",
                                "StatWeek"="RecoveryStatWeek",
@@ -35,10 +51,8 @@ xtabs(~ReleaseStatWeek,  data=release,exclude=NULL, na.action=na.pass)
 xtabs(~RecoveryStatWeek, data=recap,  exclude=NULL, na.action=na.pass)
 xtabs(CatchWithTags~RecoveryStatWeek, data=catch,  exclude=NULL, na.action=na.pass)
 
-#Half Week Strata
-# Divide Sunday -> Wednesday as the first half= Commercial Opening
-#                Thursday -> Saturday as the second half
-# First get all the dates in the study
+# Figure out the half week strata
+# Divide Sunday -> Wednesday as the first half= Commercial Opening and Thursday -> Saturday as the second half
 strata <- rbind( 
   plyr::rename(release, c("ReleaseStatWeek"="StatWeek",
                           "ReleaseDate"="Date"))[,c("Year","Date","StatWeek")],
@@ -59,28 +73,22 @@ strata$HalfStatWeek <- strata$StatWeek + .1 +
 head(strata)
 
 # merge back the strata halfweek back to release, recovery, and commercial catch
-
 dim(release)
 release <- merge(release, 
-                 plyr::rename(strata, 
-                              c("Date"="ReleaseDate",
-                                "HalfStatWeek"="ReleaseHalfStatWeek"))
+                 plyr::rename(strata, c("Date"="ReleaseDate","HalfStatWeek"="ReleaseHalfStatWeek"))
                  [,c("ReleaseDate","ReleaseHalfStatWeek")],
                  all.x=TRUE)
 dim(release)
 
 dim(recap)
 recap <- merge(recap, 
-               plyr::rename(strata, 
-                            c("Date"="RecoveryDate",
-                              "HalfStatWeek"="RecoveryHalfStatWeek"))
+               plyr::rename(strata,  c("Date"="RecoveryDate", "HalfStatWeek"="RecoveryHalfStatWeek"))
                [,c("RecoveryDate","RecoveryHalfStatWeek")],
                all.x=TRUE)
 dim(recap)
 
-# but a recap that occurs in the second half of the week is assumed to have occured
-# in the commerical opening. You need to change the data as needed for the half week
-# analysis and is likely to be year specific
+# but a recap that occurs in the second half of the week is assumed to have occurred
+# in the commerical opening. Change the data as needed for the half week analysis; likely to be year specific
 xtabs(~RecoveryHalfStatWeek, data=recap)
 
 select <- (recap$RecoveryHalfStatWeek %% 1) > .15  # recoveries in second half of week
@@ -93,15 +101,12 @@ xtabs(~RecoveryHalfStatWeek, data=recap)
 
 dim(catch)
 catch <- merge(catch, 
-               plyr::rename(strata, 
-                            c("Date"="RecoveryDate",
-                              "HalfStatWeek"="RecoveryHalfStatWeek"))
+               plyr::rename(strata, c("Date"="RecoveryDate","HalfStatWeek"="RecoveryHalfStatWeek"))
                [,c("RecoveryDate","RecoveryHalfStatWeek")],
                all.x=TRUE)
 dim(catch)
 
-# merge the recaptures with the releases
-# check that recapture tag numbers match
+# merge the recaptures with the releases; check that recapture tag numbers match
 setdiff(recap$TagID, release$TagID)
 
 dim(release)
@@ -124,20 +129,22 @@ fw.stratum.index <- data.frame(stratum.index=1:length(fw.stat.weeks),
                                stringsAsFactors=FALSE)
 fw.stratum.index
 
+
 # get the data necessary for the call to BTSPAS
 fw.data <- BTSPAS_input(relrecap, catch, "ReleaseStatWeek", "RecoveryStatWeek",
                         fw.stratum.index, catch.var="CatchWithTags")
 
 # fit the BTSPAS model
-fw.prefix <- paste("Taku-FW-Inseason-W",round(min(fw.stat.weeks)),
+fw.prefix <- paste("Taku-FullWeek-Inseason-W",round(min(fw.stat.weeks)),
                    "-W",round(max(fw.stat.weeks)),"-",sep="")
 
-fit.BTSPAS(fw.data,prefix=fw.prefix)
+fit.BTSPAS(fw.data,prefix=fw.prefix, add.ones.at.start=TRUE)
 
-# fit the BTSPAS model with fall back (say n=50, x=12)
-fw.prefix.dropout <- paste("Taku-FW-Inseason-W",round(min(fw.stat.weeks)),
+# fit the BTSPAS model with fall back (say n=50, x=11)
+fw.prefix.dropout <- paste("Taku-FullWeek-Inseason-W",round(min(fw.stat.weeks)),
                            "-W",round(max(fw.stat.weeks)),"-fallback-",sep="")
-fit.BTSPAS.dropout(fw.data,prefix=fw.prefix.dropout, n=50, dropout=12)
+
+fit.BTSPAS.dropout(fw.data,prefix=fw.prefix.dropout, n=50, dropout=11, add.ones.at.start=TRUE)
 
 # Half Week BTSPAS analysis
 # Define the stratum variable as 1 = first stat week, 2=second stat week etc
@@ -149,29 +156,30 @@ hw.stratum.index <- data.frame(stratum.index=1:length(hw.stat.weeks),
                                stringsAsFactors=FALSE)
 hw.stratum.index
 
-
 # get the data necessary for the call to BTSPAS
 hw.data <- BTSPAS_input(relrecap, catch, "ReleaseHalfStatWeek", "RecoveryHalfStatWeek",
                         hw.stratum.index, catch.var="CatchWithTags")
 
 # fit the BTSPAS model
-hw.prefix <- gsub("FW","HW",fw.prefix)
-fit.BTSPAS(hw.data,prefix=hw.prefix)
+hw.prefix <- gsub("FullWeek","HalfWeek",fw.prefix)
+fit.BTSPAS(hw.data,prefix=hw.prefix, add.ones.at.start=TRUE)
 
-
-# fit the BTSPAS model with fall back (say n=50, x=12)
-hw.prefix.dropout <- gsub("FW","HW",fw.prefix.dropout)
-fit.BTSPAS.dropout(hw.data,prefix=hw.prefix.dropout, n=50, dropout=11)
+# fit the BTSPAS model with fall back (say n=50, x=11)
+hw.prefix.dropout <- gsub("FullWeek","HalfWeek",fw.prefix.dropout)
+fit.BTSPAS.dropout(hw.data,prefix=hw.prefix.dropout, n=50, dropout=11, add.ones.at.start=TRUE)
 
 # Make a table of the estimates from the various sets of weeks etc
 # Extract the results from the various fits
 file.names <-dir()
+
 # Extract the directories with the fits
 file.names.fits<- file.names[grepl(paste("^Taku-"), file.names)]
 file.names.fits
 
 # make a pdf file of the fitted curves
-pdf(paste("output/Inseason-all-fits.pdf",sep=""))
+prefix <- paste("Taku-Inseason-W",round(min(fw.stat.weeks)),
+                "-W",round(max(fw.stat.weeks)),"-",sep="")
+pdf(file.path("output",paste(prefix,"-Inseason_fits.pdf",sep="")))
 plyr::l_ply(file.names.fits, function(x){
   cat("Extracting final plot from ", x, "\n")
   load(file.path(x, "taku-fit-tspndenp-saved.Rdata"))
@@ -196,8 +204,7 @@ run.size <- plyr::ldply(file.names.fits, function(x){
   Ntot
 })
 run.size
-write.csv(run.size,
-          file=paste("output/inseason-run.size.csv",sep=""))
+write.csv(run.size, file.path("output",paste(prefix,"-Inseason_runsize.csv",sep="")), row.names=TRUE)
 
 # Extract the Petersen estimators
 # Extract all of the estimates of the total run size
@@ -217,25 +224,26 @@ run.pet.size <- plyr::ldply(file.names.fits, function(x){
     file=x)
 })
 run.pet.size
-write.csv(run.pet.size, file="output/Inseason-PP.run.size.csv")
+write.csv(run.pet.size,file.path("output",paste(prefix,"-Inseason_PP_runsize.csv",sep="")), row.names=TRUE)
 
+#move files to correct directory
+taku.prefix <- paste(fw.prefix,"-",Year, sep="")
+files_old <- paste0(getwd(), "/", taku.prefix)
+files_new <- paste0(getwd(), "/output/", taku.prefix)
+file_move(files_old, files_new)
 
-#taku.prefix <- paste(fw.prefix,"-",Year, sep="")
-#files_old <- paste0(getwd(), "/", taku.prefix)
-#files_new <- paste0(getwd(), "/output/", taku.prefix)
-#file.move(from = files_old, to = files_new)
+taku.prefix <- paste(fw.prefix.dropout,"-",Year, sep="")
+files_old <- paste0(getwd(), "/", taku.prefix)
+files_new <- paste0(getwd(), "/output/", taku.prefix)
+file_move(files_old, files_new)
 
-#taku.prefix <- paste(fw.prefix.dropout,"-",Year, sep="")
-#files_old <- paste0(getwd(), "/", taku.prefix)
-#files_new <- paste0(getwd(), "/output/", taku.prefix)
-#file.move(from = files_old, to = files_new)
+taku.prefix <- paste(hw.prefix,"-",Year, sep="")
+files_old <- paste0(getwd(), "/", taku.prefix)
+files_new <- paste0(getwd(), "/output/", taku.prefix)
+file_move(files_old, files_new)
 
-#taku.prefix <- paste(hw.prefix,"-",Year, sep="")
-#files_old <- paste0(getwd(), "/", taku.prefix)
-#files_new <- paste0(getwd(), "/output/", taku.prefix)
-#file.move(from = files_old, to = files_new)
+taku.prefix <- paste(hw.prefix.dropout,"-",Year, sep="")
+files_old <- paste0(getwd(), "/", taku.prefix)
+files_new <- paste0(getwd(), "/output/", taku.prefix)
+file_move(files_old, files_new)
 
-#taku.prefix <- paste(hw.prefix.dropout,"-",Year, sep="")
-#files_old <- paste0(getwd(), "/", taku.prefix)
-#files_new <- paste0(getwd(), "/output/", taku.prefix)
-#file.move(from = files_old, to = files_new)
