@@ -21,13 +21,14 @@ library(rjags)
 library(cellranger)
 library(readxl)
 
-fw.stat.weeks <- 23:29   # stat weeks with releases and recoveries to  be included
-Year<-2018 # input year
-data.directory <-file.path('data','2018_inseason')
+fw.stat.weeks <- 23:27   # stat weeks with releases and recoveries to  be included
+Year<-2019 # input year
+data.directory <-file.path('data','2019_inseason','SW27')
 
 # load data and ensure variable names match
 read.csv(file.path(data.directory,'release_data.csv'), header=TRUE, as.is=TRUE, strip.white=TRUE) -> release
-release$ReleaseDate <- lubridate::ymd(release$ReleaseDate)
+#release$ReleaseDate <- lubridate::ymd(release$ReleaseDate)
+release$ReleaseDate <- lubridate::mdy(release$ReleaseDate) # GP FIX
 dim(release)
 release <- release[ !is.na(release$ReleaseDate),]
 dim(release)
@@ -40,7 +41,8 @@ head(recap)
 
 read.csv(file.path(data.directory,'catch_data.csv'), header=TRUE, as.is=TRUE, strip.white=TRUE) -> catch
 head(catch)
-catch$Date <- lubridate::ymd(catch$Date)
+#catch$Date <- lubridate::ymd(catch$Date)
+catch$Date <- lubridate::mdy(catch$Date) # GP FIX
 catch <- plyr::rename(catch, c("Date"="RecoveryDate",
                                "StatWeek"="RecoveryStatWeek",
                                "CdnCommCt"="CatchWithTags"))
