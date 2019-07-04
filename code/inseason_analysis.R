@@ -1,5 +1,5 @@
 # load libraries
-#devtools::install_github("cschwarz-stat-sfu-ca/BTSPAS", dependencies = TRUE, build_vignettes = TRUE) #only load once then comment out
+devtools::install_github("cschwarz-stat-sfu-ca/BTSPAS", dependencies = TRUE, build_vignettes = TRUE) #only load once then comment out
 # check if the URL exists (i.e. have internet connection and correct URL)
 library(RCurl)
 url.check <- url.exists("https://raw.githubusercontent.com/cschwarz-stat-sfu-ca/taku/master/FUNCTIONS_BTSPAS_Wrappers.R")
@@ -27,7 +27,7 @@ data.directory <-file.path('data','2019_inseason')
 
 # load data and ensure variable names match
 read.csv(file.path(data.directory,'release_data.csv'), header=TRUE, as.is=TRUE, strip.white=TRUE) -> release
-release$ReleaseDate <- lubridate::ymd(release$ReleaseDate)
+release$ReleaseDate <- lubridate::mdy(release$ReleaseDate)
 dim(release)
 release <- release[ !is.na(release$ReleaseDate),]
 dim(release)
@@ -40,7 +40,7 @@ head(recap)
 
 read.csv(file.path(data.directory,'catch_data.csv'), header=TRUE, as.is=TRUE, strip.white=TRUE) -> catch
 head(catch)
-catch$Date <- lubridate::ymd(catch$Date)
+catch$Date <- lubridate::mdy(catch$Date)
 catch <- plyr::rename(catch, c("Date"="RecoveryDate",
                                "StatWeek"="RecoveryStatWeek",
                                "CdnCommCt"="CatchWithTags"))
