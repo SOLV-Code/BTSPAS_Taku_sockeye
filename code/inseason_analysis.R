@@ -144,7 +144,7 @@ fit.BTSPAS(fw.data,prefix=fw.prefix, add.ones.at.start=TRUE, InitialSeed=2327)
 fw.prefix.dropout <- paste("Taku-FullWeek-Inseason-W",round(min(fw.stat.weeks)),
                            "-W",round(max(fw.stat.weeks)),"-fallback-",sep="")
 
-fit.BTSPAS.dropout(fw.data,prefix=fw.prefix.dropout, n=50, dropout=11, add.ones.at.start=TRUE, IntialSeed=2327)
+fit.BTSPAS.dropout(fw.data,prefix=fw.prefix.dropout, n=50, dropout=11, add.ones.at.start=TRUE, InitialSeed=2327)
 
 # Half Week BTSPAS analysis
 # Define the stratum variable as 1 = first stat week, 2=second stat week etc
