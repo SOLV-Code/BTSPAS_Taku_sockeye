@@ -8,7 +8,7 @@ Year<-2019 # input year
 
  # use this to specify a subfolder for this week (in the "data" and "output" folders)
 sw.subfolder <- "SW28" 
-sw.randomseed <- 2328
+sw.randomseed <- 2327
 
 
 #####
