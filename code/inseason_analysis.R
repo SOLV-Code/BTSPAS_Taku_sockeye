@@ -1,5 +1,6 @@
 # load libraries
 devtools::install_github("cschwarz-stat-sfu-ca/BTSPAS", dependencies = TRUE, build_vignettes = TRUE) #only load once then comment out
+
 # check if the URL exists (i.e. have internet connection and correct URL)
 library(RCurl)
 url.check <- url.exists("https://raw.githubusercontent.com/cschwarz-stat-sfu-ca/taku/master/FUNCTIONS_BTSPAS_Wrappers.R")
@@ -11,7 +12,6 @@ if(url.check){
 }
 
 if(!url.check){ source("../CODE/Local Copies of Carl Functions/FUNCTIONS_BTSPAS_Wrappers.R") }
-
 library(BTSPAS) 
 library(ggplot2)
 library(lubridate)
@@ -23,12 +23,16 @@ library(readxl)
 
 fw.stat.weeks <- 23:27   # stat weeks with releases and recoveries to  be included
 Year<-2019 # input year
+
 data.directory <-file.path('data','2019_inseason','SW27')
 
 # load data and ensure variable names match
 read.csv(file.path(data.directory,'release_data.csv'), header=TRUE, as.is=TRUE, strip.white=TRUE) -> release
-#release$ReleaseDate <- lubridate::ymd(release$ReleaseDate)
-release$ReleaseDate <- lubridate::mdy(release$ReleaseDate) # GP FIX
+release$ReleaseDate <- lubridate::mdy(release$ReleaseDate)
+
+
+
+
 dim(release)
 release <- release[ !is.na(release$ReleaseDate),]
 dim(release)
@@ -41,8 +45,9 @@ head(recap)
 
 read.csv(file.path(data.directory,'catch_data.csv'), header=TRUE, as.is=TRUE, strip.white=TRUE) -> catch
 head(catch)
-#catch$Date <- lubridate::ymd(catch$Date)
-catch$Date <- lubridate::mdy(catch$Date) # GP FIX
+
+catch$Date <- lubridate::mdy(catch$Date)
+
 catch <- plyr::rename(catch, c("Date"="RecoveryDate",
                                "StatWeek"="RecoveryStatWeek",
                                "CdnCommCt"="CatchWithTags"))
@@ -140,13 +145,13 @@ fw.data <- BTSPAS_input(relrecap, catch, "ReleaseStatWeek", "RecoveryStatWeek",
 fw.prefix <- paste("Taku-FullWeek-Inseason-W",round(min(fw.stat.weeks)),
                    "-W",round(max(fw.stat.weeks)),"-",sep="")
 
-fit.BTSPAS(fw.data,prefix=fw.prefix, add.ones.at.start=TRUE)
+fit.BTSPAS(fw.data,prefix=fw.prefix, add.ones.at.start=TRUE, InitialSeed=2327)
 
 # fit the BTSPAS model with fall back (say n=50, x=11)
 fw.prefix.dropout <- paste("Taku-FullWeek-Inseason-W",round(min(fw.stat.weeks)),
                            "-W",round(max(fw.stat.weeks)),"-fallback-",sep="")
 
-fit.BTSPAS.dropout(fw.data,prefix=fw.prefix.dropout, n=50, dropout=11, add.ones.at.start=TRUE)
+fit.BTSPAS.dropout(fw.data,prefix=fw.prefix.dropout, n=50, dropout=11, add.ones.at.start=TRUE, InitialSeed=2327)
 
 # Half Week BTSPAS analysis
 # Define the stratum variable as 1 = first stat week, 2=second stat week etc
@@ -164,11 +169,11 @@ hw.data <- BTSPAS_input(relrecap, catch, "ReleaseHalfStatWeek", "RecoveryHalfSta
 
 # fit the BTSPAS model
 hw.prefix <- gsub("FullWeek","HalfWeek",fw.prefix)
-fit.BTSPAS(hw.data,prefix=hw.prefix, add.ones.at.start=TRUE)
+fit.BTSPAS(hw.data,prefix=hw.prefix, add.ones.at.start=TRUE, InitialSeed=2327)
 
 # fit the BTSPAS model with fall back (say n=50, x=11)
 hw.prefix.dropout <- gsub("FullWeek","HalfWeek",fw.prefix.dropout)
-fit.BTSPAS.dropout(hw.data,prefix=hw.prefix.dropout, n=50, dropout=11, add.ones.at.start=TRUE)
+fit.BTSPAS.dropout(hw.data,prefix=hw.prefix.dropout, n=50, dropout=11, add.ones.at.start=TRUE, InitialSeed=2327)
 
 # Make a table of the estimates from the various sets of weeks etc
 # Extract the results from the various fits
