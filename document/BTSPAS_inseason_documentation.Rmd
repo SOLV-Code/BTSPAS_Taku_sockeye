@@ -73,10 +73,9 @@ The file should contain the following variable names:
 The recovery type should only include commercial sockeye salmon catch. 
 If the fishery was not open or there were zero catches, a '0' should be placed in the cell. All dates should in yyyy-mm-dd format.
 
-These three csv files should be updated weekly, and kept placed in the data folder. 
-Old versions of weekly data should be kept in the *data/prior_weeks_data folder*.
-It will be easiest if you copy the previous week's file to the *data/prior_weeks_data_folder* before
-modifying it with the new data.
+These three csv files should be updated weekly and placed in the data folder in the correct statistical week folder. 
+Old versions of weekly data should be kept in a prior weekly folder *data/yyyy_inseason/SWxx*.
+For example, the files for the 2019 season statistical week 28 should be placed here: data/2019_inseason/SW28. 
 The data files should be 'clean' data and free of NAs or missing information (i.e. missing recovery dates or tag id numbers).
 
 Download the latest version of BTSPAS from the GitHub site at https://github.com/cschwarz-stat-sfu-ca/BTSPAS 
