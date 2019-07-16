@@ -103,12 +103,8 @@ The data structures include the
 * `fit.BTSPAS.dropout()` which fits the time stratified model but allowing for dropout/fallback.
 
 # Inseason Estimates for Taku River
-The inputs that need to be specified for the code to run are the 
-* stat weeks to include in the analysis, 
-* the year, 
-*stat weeks sub folder, 
-*sw.randomseed, and 
-*data.directory to store the results.
+The inputs that need to be specified for the code to run are stat weeks to include in the analysis,
+the year, stat weeks sub folder, sw.randomseed, and the data.directory to store the results.
 
 These are specified at the top of the *inseason_analysis.R* code in the code fragments:
 ```
