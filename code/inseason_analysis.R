@@ -9,7 +9,6 @@ sw.randomseed <- 2328
 data.directory <-file.path('data','2019_inseason',sw.subfolder)
 if(!dir.exists(file.path("output",sw.subfolder))){dir.create(file.path("output",sw.subfolder))}
 
-
 # load libraries
 devtools::install_github("cschwarz-stat-sfu-ca/BTSPAS", dependencies = TRUE, build_vignettes = TRUE) #only load once then comment out
 
@@ -191,7 +190,7 @@ file.names.fits
 # make a pdf file of the fitted curves
 prefix <- paste("Taku-Inseason-W",round(min(fw.stat.weeks)),
                 "-W",round(max(fw.stat.weeks)),"-",sep="")
-pdf(file.path("output",paste(prefix,"-Inseason_fits.pdf",sep="")))
+pdf(file.path("output",sw.subfolder, "/",paste(prefix,"-Inseason_fits.pdf",sep="")))
 plyr::l_ply(file.names.fits, function(x){
   cat("Extracting final plot from ", x, "\n")
   load(file.path(x, "taku-fit-tspndenp-saved.Rdata"))
@@ -216,7 +215,7 @@ run.size <- plyr::ldply(file.names.fits, function(x){
   Ntot
 })
 run.size
-write.csv(run.size, file.path("output",paste(prefix,"-Inseason_runsize.csv",sep="")), row.names=TRUE)
+write.csv(run.size, file.path("output",sw.subfolder, "/", paste(prefix,"-Inseason_runsize.csv",sep="")), row.names=TRUE)
 
 # Extract the Petersen estimators
 # Extract all of the estimates of the total run size
@@ -236,26 +235,26 @@ run.pet.size <- plyr::ldply(file.names.fits, function(x){
     file=x)
 })
 run.pet.size
-write.csv(run.pet.size,file.path("output",paste(prefix,"-Inseason_PP_runsize.csv",sep="")), row.names=TRUE)
+write.csv(run.pet.size,file.path("output",sw.subfolder, "/", paste(prefix,"-Inseason_PP_runsize.csv",sep="")), row.names=TRUE)
 
 #move files to correct directory
 taku.prefix <- paste(fw.prefix,"-",Year, sep="")
 files_old <- paste0(getwd(), "/", taku.prefix)
-files_new <- paste0(getwd(), "/output/", taku.prefix)
+files_new <- paste0(getwd(), "/output/",sw.subfolder, "/", taku.prefix)
 file_move(files_old, files_new)
 
 taku.prefix <- paste(fw.prefix.dropout,"-",Year, sep="")
 files_old <- paste0(getwd(), "/", taku.prefix)
-files_new <- paste0(getwd(), "/output/", taku.prefix)
+files_new <- paste0(getwd(), "/output/",sw.subfolder, "/", taku.prefix)
 file_move(files_old, files_new)
 
 taku.prefix <- paste(hw.prefix,"-",Year, sep="")
 files_old <- paste0(getwd(), "/", taku.prefix)
-files_new <- paste0(getwd(), "/output/", taku.prefix)
+files_new <- paste0(getwd(), "/output/",sw.subfolder, "/", taku.prefix)
 file_move(files_old, files_new)
 
 taku.prefix <- paste(hw.prefix.dropout,"-",Year, sep="")
 files_old <- paste0(getwd(), "/", taku.prefix)
-files_new <- paste0(getwd(), "/output/", taku.prefix)
+files_new <- paste0(getwd(), "/output/",sw.subfolder, "/", taku.prefix)
 file_move(files_old, files_new)
 
