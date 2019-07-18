@@ -1,7 +1,7 @@
 ---
 title: "Directions for Inseason Estimates for Taku River Sockeye Salmon Using BTSPAS"
 author: "Sara Miller"
-date: '2019-05-02'
+date: '2019-07-15'
 output:
   pdf_document: default
   html_document:
@@ -35,9 +35,14 @@ Taku*
 so that ouput and data from inseason estimates is not committed to GitHub.
 The code file that are necessary to run the analysis are the *inseason_analysis.R* file.
 The *inseason_analysis.R* file will also load some helper functions to structure the data for *BTSPAS* and
-to do the actua model fitting.
+to do the actual model fitting.
 
 # Data Setup
+Three csv files should be updated weekly and placed in the data folder in the correct statistical week folder. 
+Old versions of weekly data should be kept in a prior weekly folder *data/yyyy_inseason/SWxx*.
+For example, the files for the 2019 season statistical week 28 should be placed here: data/2019_inseason/SW28. 
+The data files should be 'clean' data and free of NAs or missing information (i.e. missing recovery dates or tag id numbers).  
+
 Data files will be provided on a weekly basis from the tagging crews and DFO and should be placed in the data folder. These include:  
 1. release data,  
 2. recapture data, and  
@@ -71,22 +76,16 @@ The file should contain the following variable names:
 * *CdnCommCt*. 
 
 The recovery type should only include commercial sockeye salmon catch. 
-If the fishery was not open or there were zero catches, a '0' should be placed in the cell. All dates should in yyyy-mm-dd format.
+If the fishery was not open or there were zero catches, a '0' should be placed in the cell. All dates should in mm-dd-yyyy format.
 
-These three csv files should be updated weekly, and kept placed in the data folder. 
-Old versions of weekly data should be kept in the *data/prior_weeks_data folder*.
-It will be easiest if you copy the previous week's file to the *data/prior_weeks_data_folder* before
-modifying it with the new data.
-The data files should be 'clean' data and free of NAs or missing information (i.e. missing recovery dates or tag id numbers).
 
 Download the latest version of BTSPAS from the GitHub site at https://github.com/cschwarz-stat-sfu-ca/BTSPAS 
 using `devtools::install_github("cschwarz-stat-sfu-ca/BTSPAS", dependencies = TRUE, build_vignettes = TRUE)`.
 This could take up to 20 minutes because the vignettes take a long time to compile. This only needs to be done
 once at the start of the season (unless an important update is made to the BTSPAS package.)
-You may need to type in '3' even though this choice is 'NONE.' Need to talk to Carl about possible glitch.
 
 # Analysis
-All required packages need for the analysis are  loaded prior to running models.
+All required packages need for the analysis are loaded prior to running models.
 These names of these pacakges are located at the top of the *inseason_analysis.R* file.
 If you are missing a package, you will need to install it from *CRAN* in the usual fashion.
 
@@ -104,20 +103,25 @@ The data structures include the
 * `fit.BTSPAS.dropout()` which fits the time stratified model but allowing for dropout/fallback.
 
 # Inseason Estimates for Taku River
-The inputs that need to be specified for the code to run are the 
-* stat weeks to include in the analysis, 
-* the year, and 
-*data.directory to store the results.
+The inputs that need to be specified for the code to run are stat weeks to include in the analysis,
+the year, stat weeks sub folder, sw.randomseed, and the data.directory to store the results.
 
-These are specified at the top of the *inseason_analysis.R* code in the code fragments
+These are specified at the top of the *inseason_analysis.R* code in the code fragments:
 ```
-fw.stat.weeks <- 23:28   # stat weeks with releases and recoveries to  be included  
-Year <- 2019 #input year
-data.directory <-file.path('data','2019_inseason') #directory for current year
+fw.stat.weeks <- 23:28   # stat weeks with releases and recoveries to  be included
+Year<-2019 # input year
+
+sw.subfolder <- "SW28" 
+sw.randomseed <- 2328.
 ```
 Select the stat weeks for which you want the BTSPAS to provide estimates on a FW and HW basis.
 Change the above code to account for which stat weeks of data will be used in the estimate. 
 There should be a folder in the data folder for *yyyy*_inseason.
+
+The Bayesian estimates will differ due to simulation uncertainty when generating the posterior distribution.  
+Bayesian methods use Markov Chain Monte Carlo (MCMC) method which involve simulations from a random number generator. To   "force" the random numbers to be the same across runs ... in the BTSPAS call, there is an argument InitialSeed=xxxxx where you can specify a "random" integer between 1 and 1000000 to force the same random numbers to be used across different run.
+In the code, the InitialSeed is set to sw.randomseed. For consistency across runs, use the random seed of the weeks that are being used in the estimate. For example, if the estimate pertains to statistical weeks 23 to 27, the random seed should  
+be set to 2327.
 
 After reading in the data and doing various merges, the *inseason_analysis.R* code will 
 create a series of directories in the current workspace that will accumulate 
@@ -140,16 +144,15 @@ If the `add.ones.at.start=TRUE` argument is used in the first weeks of estimates
 used the entire season (along with postseason). There are four places in the code where the
 argument needs to changed from a *FALSE* to *TRUE* (Be careful that *TRUE* is all uppercase.)
 
-* `fit.BTSPAS(fw.data,prefix=fw.prefix, add.ones.at.start=FALSE)`
-* `fit.BTSPAS.dropout(fw.data,prefix=fw.prefix.dropout, n=50, dropout=11, add.ones.at.start=FALSE)`
-* `fit.BTSPAS(hw.data,prefix=hw.prefix, add.ones.at.start=FALSE)`
-* `fit.BTSPAS.dropout(hw.data,prefix=hw.prefix.dropout, n=50, dropout=11, add.ones.at.start=FALSE)`
+* `fit.BTSPAS(fw.data,prefix=fw.prefix, add.ones.at.start=FALSE, InitialSeed=sw.randomseed)`
+* `fit.BTSPAS.dropout(fw.data,prefix=fw.prefix.dropout, n=50, dropout=11, add.ones.at.start=FALSE, InitialSeed=sw.randomseed)`
+* `fit.BTSPAS(hw.data,prefix=hw.prefix, add.ones.at.start=FALSE, InitialSeed=sw.randomseed)`
+* `fit.BTSPAS.dropout(hw.data,prefix=hw.prefix.dropout, n=50, dropout=11, add.ones.at.start=FALSE, InitialSeed=sw.randomseed)`
 
 The code to implement the inseason estimates are not expanded by fishwheel runtiming.
 
-The weekly inseason estimate should be the mean estimate from the file/folder '*Taku-FullWeek-Inseason-Wxx-Wxx-fallback--yyyy*'*
-output to the file 'Taku-Inseason-W*xx*-W*xx*--*yyyy*Inseason-run.size.csv.  
+The weekly inseason estimate should be the mean estimate from the file/folder '*Taku-FullWeek-Inseason-Wxx-Wxx-fallback--yyyy*' output to the file  'Taku-Inseason-W*xx*-W*xx*--*yyyy*Inseason-run.size.csv.  
 
 ## Dropout rate
-Model the year-to-year variation in drop out (including sampling uncertainty) as binomial with $n =  50$  and $x= 11$ 
+The protocol for the 2019 season was to model the year-to-year variation in drop out (including sampling uncertainty) as binomial with $n =  50$  and $x= 11$ 
 which gives mean $p_{dropout}= 0.22$ with a standard deviation of $0.05938262$. 
